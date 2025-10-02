@@ -1,0 +1,178 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Toast from '../../components/Toast.astro';
+
+// Datos simulados para KPIs
+const kpis = [
+  { title: 'Proyectos Completados', value: '1,247', icon: '✅', trend: '+12%' },
+  { title: 'Clientes Satisfechos', value: '892', icon: '😊', trend: '+8%' },
+  { title: 'Cotizaciones Activas', value: '23', icon: '📋', trend: '+15%' },
+  { title: 'Ingresos Mes', value: '₡2.4M', icon: '💰', trend: '+22%' },
+];
+---
+
+<Layout 
+  title="Panel Administrativo - Taller Industrial Brenes"
+  description="Panel de administración para gestión de contenido y pedidos"
+>
+  <div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b">
+      <div class="px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-4">
+            <img src="/images/logoletrasblancas.png" alt="Logo" class="h-10" />
+            <h1 class="text-2xl font-bold text-dark-800">Panel Administrativo</h1>
+          </div>
+          <div class="flex items-center space-x-4">
+            <span class="text-sm text-gray-600">Administrador</span>
+            <a href="/" class="btn-primary text-sm py-2 px-4">Ver Sitio</a>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Contenido principal -->
+    <main class="p-6">
+      <!-- KPIs Dashboard -->
+      <section class="mb-8">
+        <h2 class="text-xl font-bold text-dark-800 mb-6">Resumen General</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {kpis.map(kpi => (
+            <div class="bg-white p-6 rounded-2xl shadow-lg">
+              <div class="flex items-center justify-between mb-4">
+                <div class="text-3xl">{kpi.icon}</div>
+                <span class="text-sm font-semibold text-green-600">{kpi.trend}</span>
+              </div>
+              <div class="text-2xl font-bold text-dark-800 mb-1">{kpi.value}</div>
+              <div class="text-sm text-gray-600">{kpi.title}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+      
+      <!-- Gestión de contenido -->
+      <section class="mb-8">
+        <h2 class="text-xl font-bold text-dark-800 mb-6">Gestión de Contenido</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="bg-white p-6 rounded-2xl shadow-lg text-center">
+            <div class="text-4xl mb-4">🛠️</div>
+            <h3 class="font-bold text-lg mb-2">Servicios</h3>
+            <p class="text-gray-600 text-sm mb-4">Gestionar servicios ofrecidos</p>
+            <button class="w-full bg-accent-500 text-white py-2 px-4 rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50" disabled>
+              Administrar
+            </button>
+          </div>
+          
+          <div class="bg-white p-6 rounded-2xl shadow-lg text-center">
+            <div class="text-4xl mb-4">📦</div>
+            <h3 class="font-bold text-lg mb-2">Productos</h3>
+            <p class="text-gray-600 text-sm mb-4">Catálogo de productos</p>
+            <button class="w-full bg-accent-500 text-white py-2 px-4 rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50" disabled>
+              Administrar
+            </button>
+          </div>
+          
+          <div class="bg-white p-6 rounded-2xl shadow-lg text-center">
+            <div class="text-4xl mb-4">📸</div>
+            <h3 class="font-bold text-lg mb-2">Galería</h3>
+            <p class="text-gray-600 text-sm mb-4">Imágenes de proyectos</p>
+            <button class="w-full bg-accent-500 text-white py-2 px-4 rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50" disabled>
+              Administrar
+            </button>
+          </div>
+          
+          <div class="bg-white p-6 rounded-2xl shadow-lg text-center">
+            <div class="text-4xl mb-4">💬</div>
+            <h3 class="font-bold text-lg mb-2">Testimonios</h3>
+            <p class="text-gray-600 text-sm mb-4">Reseñas de clientes</p>
+            <button class="w-full bg-accent-500 text-white py-2 px-4 rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50" disabled>
+              Administrar
+            </button>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Contactos y leads -->
+      <section>
+        <h2 class="text-xl font-bold text-dark-800 mb-6">Gestión de Leads</h2>
+        <div class="bg-white rounded-2xl shadow-lg p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-semibold">Contactos Recientes</h3>
+            <button class="bg-accent-500 text-white px-4 py-2 rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50" disabled>
+              Ver Todos
+            </button>
+          </div>
+          
+          <div class="space-y-4">
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <div class="font-semibold">Carlos Ramírez</div>
+                <div class="text-sm text-gray-600">carlos@email.com • +506 8888-8888</div>
+                <div class="text-sm text-gray-500">Interesado en portón automatizado</div>
+              </div>
+              <div class="text-right">
+                <div class="text-sm text-gray-500">Hace 2 horas</div>
+                <div class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded">Pendiente</div>
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <div class="font-semibold">María González</div>
+                <div class="text-sm text-gray-600">maria@empresa.com • +506 7777-7777</div>
+                <div class="text-sm text-gray-500">Cotización estructura metálica</div>
+              </div>
+              <div class="text-right">
+                <div class="text-sm text-gray-500">Hace 1 día</div>
+                <div class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">En proceso</div>
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <div class="font-semibold">Roberto Solano</div>
+                <div class="text-sm text-gray-600">roberto@constructora.com • +506 6666-6666</div>
+                <div class="text-sm text-gray-500">Reparación de portón industrial</div>
+              </div>
+              <div class="text-right">
+                <div class="text-sm text-gray-500">Hace 3 días</div>
+                <div class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Completado</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- Mensaje informativo -->
+      <div class="mt-8 bg-blue-50 border border-blue-200 rounded-2xl p-6">
+        <div class="flex items-start space-x-3">
+          <div class="text-2xl">ℹ️</div>
+          <div>
+            <h3 class="font-bold text-blue-800 mb-2">Funcionalidades en Desarrollo</h3>
+            <p class="text-blue-700 text-sm leading-relaxed">
+              Este panel administrativo está preparado para integración con Supabase. 
+              Las funcionalidades CRUD se activarán cuando se configure la base de datos. 
+              Consulte el archivo SETUP.md para instrucciones de configuración.
+            </p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <Toast />
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Mostrar mensaje informativo sobre funciones deshabilitadas
+    const disabledButtons = document.querySelectorAll('button[disabled]');
+    
+    disabledButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        window.showToast('🔄 Esta funcionalidad se activará cuando se configure Supabase', { type: 'info' });
+      });
+    });
+  });
+</script>

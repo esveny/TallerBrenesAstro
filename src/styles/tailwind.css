@@ -1,0 +1,65 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-block bg-dark-800 text-white py-3 px-8 rounded-2xl font-bold text-lg transition-all duration-300 hover:bg-gray-600 hover:-translate-y-1 hover:shadow-lg;
+  }
+  
+  .card-hover {
+    @apply transition-all duration-300 hover:-translate-y-2 hover:shadow-xl;
+  }
+  
+  .scroll-animate {
+    @apply opacity-0 transition-all duration-700 ease-out;
+  }
+  
+  .scroll-animate.animate {
+    @apply opacity-100;
+  }
+  
+  .fade-up {
+    @apply transform translate-y-12;
+  }
+  
+  .fade-up.animate {
+    @apply transform translate-y-0;
+  }
+  
+  .fade-left {
+    @apply transform -translate-x-12;
+  }
+  
+  .fade-left.animate {
+    @apply transform translate-x-0;
+  }
+  
+  .fade-right {
+    @apply transform translate-x-12;
+  }
+  
+  .fade-right.animate {
+    @apply transform translate-x-0;
+  }
+  
+  .scale-in {
+    @apply transform scale-75;
+  }
+  
+  .scale-in.animate {
+    @apply transform scale-100;
+  }
+}

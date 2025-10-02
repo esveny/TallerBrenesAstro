@@ -1,0 +1,196 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import ProductCard from '../components/ProductCard.astro';
+import Toast from '../components/Toast.astro';
+
+import { getCollection } from 'astro:content';
+
+const products = await getCollection('products');
+const categories = [...new Set(products.map(product => product.data.category))];
+---
+
+<Layout 
+  title="Productos - Taller Industrial Brenes"
+  description="Catálogo de productos: portones, estructuras metálicas, rejas de seguridad y más. Fabricación personalizada con materiales de primera calidad."
+>
+  <Navbar />
+  
+  <main>
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-primary-800 to-dark-800 text-white py-20">
+      <div class="container mx-auto px-4 text-center">
+        <h1 class="text-5xl font-bold mb-6">Catálogo de Productos</h1>
+        <p class="text-xl opacity-90 max-w-3xl mx-auto">
+          Productos fabricados con materiales de primera calidad y diseños personalizados
+        </p>
+      </div>
+    </section>
+    
+    <!-- Buscador y Filtros -->
+    <section class="py-8 bg-white shadow-sm">
+      <div class="container mx-auto px-4">
+        <!-- Buscador -->
+        <div class="max-w-md mx-auto mb-6">
+          <div class="relative">
+            <input 
+              type="text" 
+              id="search-input"
+              placeholder="Buscar productos..."
+              class="w-full px-4 py-3 pl-10 pr-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            />
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
+              <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Filtros por categoría -->
+        <div class="flex flex-wrap justify-center gap-3 mb-4">
+          <button 
+            class="filter-btn px-6 py-2 rounded-full border-2 border-primary-600 text-primary-600 font-bold hover:bg-primary-600 hover:text-white transition-all duration-300 active"
+            data-filter="todos"
+          >
+            Todos
+          </button>
+          {categories.map(category => (
+            <button 
+              class="filter-btn px-6 py-2 rounded-full border-2 border-primary-600 text-primary-600 font-bold hover:bg-primary-600 hover:text-white transition-all duration-300"
+              data-filter={category}
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </button>
+          ))}
+        </div>
+        
+        <div class="text-center">
+          <span class="filter-counter text-gray-600 font-medium">
+            {products.length} productos disponibles
+          </span>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Grid de Productos -->
+    <section class="py-20 bg-gray-50">
+      <div class="container mx-auto px-4">
+        <div id="products-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {products.map(product => (
+            <div data-category={product.data.category} data-searchable={`${product.data.name} ${product.data.description}`.toLowerCase()}>
+              <ProductCard 
+                name={product.data.name}
+                description={product.data.description}
+                image={product.data.image}
+                price={product.data.price}
+                category={product.data.category}
+              />
+            </div>
+          ))}
+        </div>
+        
+        <div id="no-results" class="text-center py-20 hidden">
+          <div class="text-gray-500">
+            <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <h3 class="text-xl font-semibold mb-2">No se encontraron productos</h3>
+            <p>Intenta con otros términos de búsqueda o categorías</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- CTA -->
+    <section class="py-20 bg-gradient-to-r from-dark-800 to-primary-800 text-white">
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-6">¿No encuentra lo que busca?</h2>
+        <p class="text-xl mb-8 opacity-90">Fabricamos productos personalizados según sus necesidades</p>
+        <a href="/contacto" class="inline-flex items-center gap-3 bg-white text-dark-800 hover:bg-gray-100 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300 border border-gray-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>-->
+          </svg>
+          Solicitar Producto Personalizado
+          <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+          </svg>
+        </a>
+      </div>
+    </section>
+  </main>
+  
+  <Footer />
+  <Toast />
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const productCards = document.querySelectorAll('#products-container [data-category]');
+    const counter = document.querySelector('.filter-counter');
+    const noResults = document.getElementById('no-results');
+    
+    let activeCategory = 'todos';
+    let searchTerm = '';
+    
+    function updateDisplay() {
+      let visibleCount = 0;
+      
+      productCards.forEach(card => {
+        const category = card.getAttribute('data-category') || '';
+        const searchable = card.getAttribute('data-searchable') || '';
+        
+        const matchesCategory = activeCategory === 'todos' || category === activeCategory;
+        const matchesSearch = !searchTerm || searchable.includes(searchTerm.toLowerCase());
+        
+        const shouldShow = matchesCategory && matchesSearch;
+        
+        if (shouldShow) {
+          card.classList.remove('hidden', 'filtering-out');
+          card.classList.add('filtering-in');
+          visibleCount++;
+        } else {
+          card.classList.add('filtering-out');
+          setTimeout(() => {
+            card.classList.add('hidden');
+            card.classList.remove('filtering-in', 'filtering-out');
+          }, 300);
+        }
+      });
+      
+      // Actualizar contador y mostrar/ocultar mensaje "sin resultados"
+      if (counter) {
+        counter.textContent = `${visibleCount} ${visibleCount === 1 ? 'producto' : 'productos'} ${visibleCount === 1 ? 'encontrado' : 'encontrados'}`;
+      }
+      
+      if (noResults) {
+        noResults.classList.toggle('hidden', visibleCount > 0);
+      }
+    }
+    
+    // Filtros por categoría
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Actualizar botones activos
+        filterButtons.forEach(b => b.classList.remove('active', 'bg-primary-600', 'text-white'));
+        btn.classList.add('active', 'bg-primary-600', 'text-white');
+        
+        activeCategory = btn.getAttribute('data-filter') || 'todos';
+        updateDisplay();
+      });
+    });
+    
+    // Búsqueda en tiempo real
+    searchInput?.addEventListener('input', (e) => {
+      searchTerm = (e.target as HTMLInputElement).value;
+      updateDisplay();
+    });
+    
+    // Mostrar todos inicialmente
+    updateDisplay();
+  });
+</script>

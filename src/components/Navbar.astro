@@ -1,0 +1,91 @@
+---
+import BusinessStatus from './BusinessStatus.astro';
+---
+
+<nav class="bg-black/80 backdrop-blur-sm sticky top-0 z-50 shadow-lg">
+  <div class="container mx-auto px-4">
+    <div class="flex items-center justify-between py-3">
+      <!-- Logo -->
+      <div class="flex items-center">
+        <img 
+          src="https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/LogoTBrenesLetrasBlancas.png"
+          alt="Taller Industrial Brenes Logo" 
+          class="h-12 w-auto"
+        />
+      </div>
+      
+      <!-- Navigation Links -->
+      <div class="hidden md:flex items-center space-x-6">
+        <a 
+          href="/" 
+          class="text-white hover:text-accent-300 px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/10"
+        >
+          Inicio
+        </a>
+        <a 
+          href="/servicios" 
+          class="text-white hover:text-accent-300 px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/10"
+        >
+          Servicios
+        </a>
+        <a 
+          href="/productos" 
+          class="text-white hover:text-accent-300 px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/10"
+        >
+          Productos
+        </a>
+        <a 
+          href="/galeria" 
+          class="text-white hover:text-accent-300 px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/10"
+        >
+          Galería
+        </a>
+        <a 
+          href="/contacto" 
+          class="text-white hover:text-accent-300 px-4 py-2 rounded-full transition-all duration-300 hover:bg-white/10"
+        >
+          Contacto
+        </a>
+        <BusinessStatus />
+      </div>
+      
+      <!-- Mobile Menu Button -->
+      <div class="md:hidden">
+        <button 
+          id="mobile-menu-button" 
+          class="text-white hover:text-accent-300 p-2"
+          aria-label="Abrir menú"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="md:hidden hidden pb-4">
+      <div class="flex flex-col space-y-2">
+        <a href="/" class="text-white hover:text-accent-300 px-4 py-2 rounded transition-colors">Inicio</a>
+        <a href="/servicios" class="text-white hover:text-accent-300 px-4 py-2 rounded transition-colors">Servicios</a>
+        <a href="/productos" class="text-white hover:text-accent-300 px-4 py-2 rounded transition-colors">Productos</a>
+        <a href="/galeria" class="text-white hover:text-accent-300 px-4 py-2 rounded transition-colors">Galería</a>
+        <a href="/contacto" class="text-white hover:text-accent-300 px-4 py-2 rounded transition-colors">Contacto</a>
+        <div class="px-4 py-2">
+          <BusinessStatus />
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const button = document.getElementById('mobile-menu-button');
+    const menu = document.getElementById('mobile-menu');
+    
+    button?.addEventListener('click', () => {
+      menu?.classList.toggle('hidden');
+    });
+  });
+</script>

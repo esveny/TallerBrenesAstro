@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://tallerindustrialbrenes.com/sitemap-index.xml

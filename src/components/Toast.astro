@@ -1,0 +1,102 @@
+---
+---
+
+<div 
+  id="toast-container" 
+  class="fixed top-4 right-4 z-50 space-y-2"
+  aria-live="polite"
+>
+</div>
+
+<script>
+  interface ToastOptions {
+    type?: 'success' | 'error' | 'info' | 'warning';
+    duration?: number;
+  }
+  
+  class ToastManager {
+    private container: HTMLElement | null;
+    
+    constructor() {
+      this.container = document.getElementById('toast-container');
+    }
+    
+    show(message: string, options: ToastOptions = {}) {
+      if (!this.container) return;
+      
+      const { type = 'info', duration = 5000 } = options;
+      
+      const toast = document.createElement('div');
+      toast.className = `
+        px-6 py-4 rounded-lg shadow-lg text-white font-medium
+        transform translate-x-full transition-all duration-300 ease-out
+        ${this.getTypeClasses(type)}
+      `;
+      
+      toast.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span>${message}</span>
+          <button class="ml-4 text-white/70 hover:text-white">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+      `;
+      
+      // Agregar botón de cierre
+      const closeBtn = toast.querySelector('button');
+      closeBtn?.addEventListener('click', () => this.remove(toast));
+      
+      this.container.appendChild(toast);
+      
+      // Animar entrada
+      setTimeout(() => toast.classList.remove('translate-x-full'), 100);
+      
+      // Auto-remove
+      if (duration > 0) {
+        setTimeout(() => this.remove(toast), duration);
+      }
+    }
+    
+    private getTypeClasses(type: string): string {
+      switch (type) {
+        case 'success': return 'bg-green-500';
+        case 'error': return 'bg-red-500';
+        case 'warning': return 'bg-yellow-500';
+        default: return 'bg-blue-500';
+      }
+    }
+    
+    private remove(toast: HTMLElement) {
+      toast.classList.add('translate-x-full');
+      setTimeout(() => toast.remove(), 300);
+    }
+  }
+  
+  // Crear instancia global
+  window.toastManager = new ToastManager();
+  
+  // Funciones de conveniencia
+  window.showToast = (message: string, options: ToastOptions = {}) => {
+    window.toastManager.show(message, options);
+  };
+  
+  window.showSuccess = (message: string) => {
+    window.toastManager.show(message, { type: 'success' });
+  };
+  
+  window.showError = (message: string) => {
+    window.toastManager.show(message, { type: 'error' });
+  };
+  
+  // Declaraciones TypeScript para window
+  declare global {
+    interface Window {
+      toastManager: ToastManager;
+      showToast: (message: string, options?: ToastOptions) => void;
+      showSuccess: (message: string) => void;
+      showError: (message: string) => void;
+    }
+  }
+</script>

@@ -1,0 +1,77 @@
+---
+import type { GalleryImage } from '../lib/types';
+
+export interface Props {
+  images: GalleryImage[];
+  showFilters?: boolean;
+}
+
+const { images, showFilters = false } = Astro.props;
+
+// Obtener categorías únicas, filtrando valores vacíos o undefined
+const categories = [...new Set(images.map(img => img.category).filter(cat => cat && typeof cat === 'string'))];
+---
+
+{showFilters && (
+  <div class="mb-8 text-center">
+    <div class="inline-flex flex-wrap gap-3 justify-center mb-4">
+      <button 
+        class="filter-btn px-6 py-2 rounded-full border-2 border-primary-600 text-primary-600 font-bold hover:bg-primary-600 hover:text-white transition-all duration-300 active"
+        data-filter="todos"
+      >
+        Todos
+      </button>
+      {categories.filter(category => category).map(category => (
+        <button 
+          class="filter-btn px-6 py-2 rounded-full border-2 border-primary-600 text-primary-600 font-bold hover:bg-primary-600 hover:text-white transition-all duration-300"
+          data-filter={category}
+        >
+          {category && typeof category === 'string' ? category.charAt(0).toUpperCase() + category.slice(1) : 'Sin categoría'}
+        </button>
+      ))}
+    </div>
+    <div class="filter-counter text-gray-600 font-medium">
+      {images.length} resultados
+    </div>
+  </div>
+)}
+
+<div 
+  class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+  id="gallery-container"
+>
+  {images.map((image, index) => (
+    <div 
+      class="project-card bg-white rounded-2xl shadow-lg overflow-hidden card-hover scroll-animate fade-up"
+      data-category={image.category}
+      style={`transition-delay: ${index * 0.1}s`}
+    >
+      <div class="aspect-video overflow-hidden">
+        <img 
+          src={image.image}
+          alt={image.caption || 'Proyecto de Taller Industrial Brenes'}
+          class="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+      {image.caption && (
+        <div class="p-4">
+          <p class="text-gray-700 font-medium">{image.caption}</p>
+          <span class="inline-block bg-accent-100 text-accent-800 text-sm font-medium px-3 py-1 rounded-full mt-2 capitalize">
+            {image.category}
+          </span>
+        </div>
+      )}
+    </div>
+  ))}
+</div>
+
+{showFilters && (
+  <script>
+    import { initCategoryFilters } from '../lib/filters';
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      initCategoryFilters('gallery-container');
+    });
+  </script>
+)}

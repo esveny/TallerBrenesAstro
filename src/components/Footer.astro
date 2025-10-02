@@ -1,0 +1,69 @@
+---
+import { getFormattedSchedule } from '../lib/businessHours';
+
+const schedule = getFormattedSchedule();
+---
+
+<footer class="bg-gradient-to-r from-dark-800 to-primary-800 text-white py-16">
+  <div class="container mx-auto px-4">
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Información de contacto -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 text-accent-300">Contacto</h3>
+        <div class="space-y-3">
+          <div class="flex items-center space-x-3">
+            <svg class="w-5 h-5 rounded-sm" viewBox="0 0 5 3" xmlns="http://www.w3.org/2000/svg">
+              <rect width="5" height="3" fill="#003f7f"/>
+              <rect width="5" height="2.4" y="0.3" fill="#ffffff"/>
+              <rect width="5" height="1.8" y="0.6" fill="#ce1126"/>
+              <rect width="5" height="1.2" y="0.9" fill="#ffffff"/>
+              <rect width="5" height="0.6" y="1.2" fill="#003f7f"/>
+            </svg>
+            <span>Rincón de Arias, Grecia, Costa Rica</span>
+          </div>
+          <div class="flex items-center space-x-3">
+            <span class="text-accent-400">📱</span>
+            <a href="tel:+50689318268" class="hover:text-accent-300">+506 8931-8268</a>
+          </div>
+          <div class="flex items-center space-x-3">
+            <span class="text-accent-400">✉️</span>
+            <a href="mailto:tallerind.brenesaso@gmail.com" class="hover:text-accent-300">
+              tallerind.brenesaso@gmail.com
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Horario -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 text-accent-300">Horario de Atención</h3>
+        <div class="space-y-2">
+          {schedule.map(day => (
+            <div class="flex justify-between">
+              <span class={day.isToday ? 'font-bold text-accent-300' : ''}>{day.day}</span>
+              <span class={day.isToday ? 'font-bold' : ''}>{day.hours}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      <!-- Enlaces rápidos -->
+      <div>
+        <h3 class="text-xl font-bold mb-4 text-accent-300">Enlaces Rápidos</h3>
+        <nav class="space-y-2">
+          <a href="/servicios" class="block hover:text-accent-300 transition-colors">Nuestros Servicios</a>
+          <a href="/productos" class="block hover:text-accent-300 transition-colors">Catálogo de Productos</a>
+          <a href="/galeria" class="block hover:text-accent-300 transition-colors">Galería de Proyectos</a>
+          <a href="/contacto" class="block hover:text-accent-300 transition-colors">Contactar</a>
+          <a href="/panel" class="block hover:text-accent-300 transition-colors">Panel Administrativo</a>
+        </nav>
+      </div>
+    </div>
+    
+    <div class="border-t border-primary-700 mt-8 pt-8 text-center">
+      <p class="text-sm opacity-90">
+        &copy; 2025 Taller Industrial Brenes y Asociados de Grecia S.A. Todos los derechos reservados.
+      </p>
+    </div>
+  </div>
+</footer>
