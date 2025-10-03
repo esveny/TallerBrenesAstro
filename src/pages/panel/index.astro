@@ -2,13 +2,6 @@
 import Layout from '../../layouts/Layout.astro';
 import Toast from '../../components/Toast.astro';
 
-// Datos simulados para KPIs
-const kpis = [
-  { title: 'Proyectos Completados', value: '1,247', icon: '✅', trend: '+12%' },
-  { title: 'Clientes Satisfechos', value: '892', icon: '😊', trend: '+8%' },
-  { title: 'Cotizaciones Activas', value: '23', icon: '📋', trend: '+15%' },
-  { title: 'Ingresos Mes', value: '₡2.4M', icon: '💰', trend: '+22%' },
-];
 ---
 
 <Layout 
@@ -21,7 +14,8 @@ const kpis = [
       <div class="px-6 py-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
-            <img src="/images/logoletrasblancas.png" alt="Logo" class="h-10" />
+            <img src="https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/LogoTBrenesLetrasNegras.png" 
+            alt="Logo" class="h-16 mx-auto" />
             <h1 class="text-2xl font-bold text-dark-800">Panel Administrativo</h1>
           </div>
           <div class="flex items-center space-x-4">
@@ -35,21 +29,7 @@ const kpis = [
     <!-- Contenido principal -->
     <main class="p-6">
       <!-- KPIs Dashboard -->
-      <section class="mb-8">
-        <h2 class="text-xl font-bold text-dark-800 mb-6">Resumen General</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {kpis.map(kpi => (
-            <div class="bg-white p-6 rounded-2xl shadow-lg">
-              <div class="flex items-center justify-between mb-4">
-                <div class="text-3xl">{kpi.icon}</div>
-                <span class="text-sm font-semibold text-green-600">{kpi.trend}</span>
-              </div>
-              <div class="text-2xl font-bold text-dark-800 mb-1">{kpi.value}</div>
-              <div class="text-sm text-gray-600">{kpi.title}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+   
       
       <!-- Gestión de contenido -->
       <section class="mb-8">
@@ -82,15 +62,6 @@ const kpis = [
             </button>
           </div>
           
-          <div class="bg-white p-6 rounded-2xl shadow-lg text-center">
-            <div class="text-4xl mb-4">💬</div>
-            <h3 class="font-bold text-lg mb-2">Testimonios</h3>
-            <p class="text-gray-600 text-sm mb-4">Reseñas de clientes</p>
-            <button class="w-full bg-accent-500 text-white py-2 px-4 rounded-lg hover:bg-accent-600 transition-colors disabled:opacity-50" disabled>
-              Administrar
-            </button>
-          </div>
-        </div>
       </section>
       
       <!-- Contactos y leads -->
