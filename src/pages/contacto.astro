@@ -12,6 +12,9 @@ import Toast from '../components/Toast.astro';
 >
   <Navbar />
   
+  <!-- reCAPTCHA v2 Script - Descomentar cuando tengas dominio real -->
+  <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
+  
   <main>
     <!-- Hero Section -->
     <section class="bg-gradient-to-r from-primary-800 to-dark-800 text-white py-20">
@@ -98,7 +101,7 @@ import Toast from '../components/Toast.astro';
                     id="name" 
                     name="name" 
                     required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-500 focus:border-transparent"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Su nombre completo"
                   />
                 </div>
@@ -112,7 +115,7 @@ import Toast from '../components/Toast.astro';
                     id="phone" 
                     name="phone" 
                     required
-                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-500 focus:border-transparent"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="+506 0000-0000"
                   />
                 </div>
@@ -127,7 +130,7 @@ import Toast from '../components/Toast.astro';
                   id="email" 
                   name="email" 
                   required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-500 focus:border-transparent"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   placeholder="su.email@ejemplo.com"
                 />
               </div>
@@ -141,14 +144,27 @@ import Toast from '../components/Toast.astro';
                   name="message" 
                   rows="5" 
                   required
-                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-accent-500 focus:border-transparent"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   placeholder="Cuéntenos sobre su proyecto..."
                 ></textarea>
               </div>
               
+              <!-- reCAPTCHA v2 - Descomentar cuando tengas dominio real -->
+              <!-- 
+              <div class="mb-6 flex justify-center">
+                <div 
+                  class="g-recaptcha" 
+                  data-sitekey="TU_SITE_KEY_AQUI"
+                  data-callback="enableSubmitButton"
+                  data-expired-callback="disableSubmitButton"
+                ></div>
+              </div>
+              -->
+              
               <button 
                 type="submit" 
-                class="w-full btn-primary text-center"
+                id="submit-button"
+                class="w-full py-5 px-6 bg-primary-600 text-white font-bold text-lg rounded-xl transition-all duration-300 hover:bg-primary-700 hover:transform hover:scale-105 shadow-lg"
               >
                 Enviar Mensaje
               </button>
@@ -189,11 +205,37 @@ import Toast from '../components/Toast.astro';
 </Layout>
 
 <script>
+  // Funciones globales para reCAPTCHA - Descomentar cuando tengas dominio real
+  /*
+  (window as any).enableSubmitButton = function() {
+    const submitButton = document.getElementById('submit-button') as HTMLButtonElement;
+    if (submitButton) {
+      submitButton.disabled = false;
+    }
+  };
+  
+  (window as any).disableSubmitButton = function() {
+    const submitButton = document.getElementById('submit-button') as HTMLButtonElement;
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+  };
+  */
+  
   document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('contact-form') as HTMLFormElement;
     
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      // Verificar reCAPTCHA - Descomentar cuando tengas dominio real
+      /*
+      const recaptchaResponse = (window as any).grecaptcha.getResponse();
+      if (!recaptchaResponse) {
+        window.showError('Por favor complete la verificación reCAPTCHA');
+        return;
+      }
+      */
       
       const formData = new FormData(form);
       const data = {
@@ -201,6 +243,7 @@ import Toast from '../components/Toast.astro';
         email: formData.get('email') as string,
         phone: formData.get('phone') as string,
         message: formData.get('message') as string,
+        // recaptcha: recaptchaResponse // Descomentar cuando uses reCAPTCHA
       };
       
       // Validación básica
@@ -216,24 +259,84 @@ import Toast from '../components/Toast.astro';
         return;
       }
       
+      // Validar teléfono (formato básico)
+      const phoneRegex = /^[\d\s\-\+\(\)]+$/;
+      if (!phoneRegex.test(data.phone)) {
+        window.showError('Por favor ingrese un teléfono válido');
+        return;
+      }
+      
       try {
-        // Simular envío (en el futuro, enviar a Supabase)
         const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
         const originalText = button.textContent;
         button.disabled = true;
         button.textContent = 'Enviando...';
         
-        // Simular delay
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        // Enviar a Supabase usando función RPC segura
+        const { supabase } = await import('../lib/supabase.ts');
+        
+        if (!supabase) {
+          throw new Error('Supabase no está configurado correctamente');
+        }
+        
+        const { data: result, error } = await supabase.rpc('submit_contact_form', {
+          p_nombre: data.name,
+          p_email: data.email,
+          p_telefono: data.phone,
+          p_mensaje: data.message
+        });
+        
+        if (error) {
+          throw new Error(error.message);
+        }
+        
+        if (!result.success) {
+          throw new Error(result.error);
+        }
+        
+        // Enviar email de notificación usando EmailJS
+        try {
+          const emailjs = await import('@emailjs/browser');
+          
+          // Obtener credenciales desde variables de entorno
+          const serviceId = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID;
+          const templateId = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID;
+          const publicKey = import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY;
+          
+          // Verificar que las credenciales estén configuradas
+          if (!serviceId || !templateId || !publicKey) {
+            console.warn('⚠️ EmailJS no está configurado completamente');
+            return;
+          }
+          
+          await emailjs.send(
+            serviceId,
+            templateId,
+            {
+              to_email: 'infotallerbrenes@gmail.com',
+              from_name: data.name,
+              from_email: data.email,
+              phone: data.phone,
+              message: data.message,
+              timestamp: new Date().toLocaleString('es-CR')
+            },
+            publicKey
+          );
+          
+          console.log('✅ Email enviado correctamente');
+        } catch (emailError) {
+          console.warn('⚠️ Error enviando email (pero la consulta se guardó):', emailError);
+          // No fallar todo el proceso si el email falla
+        }
         
         window.showSuccess('¡Mensaje enviado correctamente! Nos pondremos en contacto pronto.');
         form.reset();
         
+        // Reset reCAPTCHA - Descomentar cuando uses reCAPTCHA
+        // (window as any).grecaptcha.reset();
+        
         button.disabled = false;
         button.textContent = originalText;
-        
-        // Log para desarrollo (en producción esto iría a Supabase)
-        console.log('Lead capturado:', data);
         
       } catch (error) {
         console.error('Error al enviar:', error);
@@ -242,6 +345,9 @@ import Toast from '../components/Toast.astro';
         const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
         button.disabled = false;
         button.textContent = 'Enviar Mensaje';
+        
+        // Reset reCAPTCHA en caso de error - Descomentar cuando uses reCAPTCHA
+        // (window as any).grecaptcha.reset();
       }
     });
   });

@@ -10,13 +10,34 @@ import Toast from '../components/Toast.astro';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import type { Product } from '../lib/types';
 
-// Función para obtener productos de Supabase
+// Función para obtener productos usando RPC (MÁS SEGURO Y SIMPLE)
 async function getProductsFromSupabase(): Promise<Product[]> {
   if (!isSupabaseConfigured()) {
     console.warn('Supabase no está configurado');
     return []; // Retorna un array vacío si no está configurado
   }
 
+  try {
+    // Llamar a la función RPC en lugar de acceso directo a la tabla
+    const { data, error } = await supabase!
+      .rpc('get_products_safe');
+
+    if (error) {
+      console.error('❌ Error al obtener productos via RPC:', error);
+      // Fallback al método directo si RPC falla
+      return await getProductsDirectly();
+    }
+
+    return data || [];
+  } catch (error) {
+    console.error('Error de conexión con RPC:', error);
+    // Fallback al método directo para desarrollo
+    return await getProductsDirectly();
+  }
+}
+
+// Función de respaldo para desarrollo (método actual)
+async function getProductsDirectly(): Promise<Product[]> {
   try {
     const { data, error } = await supabase!
       .from('ImagenesTallerBrenes')
@@ -28,8 +49,7 @@ async function getProductsFromSupabase(): Promise<Product[]> {
       return [];
     }
 
-    // Mapear los datos de Supabase a nuestro formato Product
-    const mappedProducts = (data || []).map(item => ({
+    return (data || []).map(item => ({
       id: item.id?.toString(),
       name: item.NombreProducto || '',
       description: item.Descripcion || '',
@@ -37,10 +57,8 @@ async function getProductsFromSupabase(): Promise<Product[]> {
       image: item.imagen || '',  
       created_at: item.Created_At
     }));
-    
-    return mappedProducts;
   } catch (error) {
-    console.error('Error de conexión con Supabase:', error);
+    console.error('Error de conexión directa:', error);
     return [];
   }
 }
