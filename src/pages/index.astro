@@ -87,12 +87,12 @@ const products = (await getCollection('products')).slice(0, 3); // Solo 3 produc
       </div>
     </section>
     
-    <!-- Productos Destacados -->
+    <!-- Galería Destacada -->
     <section class="py-20 bg-gray-50">
       <div class="container mx-auto px-4">
         <SectionTitle 
-          title="Productos Destacados" 
-          subtitle="Algunos de nuestros productos más solicitados"
+          title="Galería Destacada" 
+          subtitle="Algunos de nuestros proyectos más destacados"
         />
         
         <div class="grid md:grid-cols-3 gap-8">
@@ -101,7 +101,6 @@ const products = (await getCollection('products')).slice(0, 3); // Solo 3 produc
               name={product.data.name}
               description={product.data.description}
               image={product.data.image}
-              price={product.data.price}
               category={product.data.category}
             />
           ))}
@@ -112,7 +111,7 @@ const products = (await getCollection('products')).slice(0, 3); // Solo 3 produc
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
             </svg>
-            Ver Catálogo Completo
+            Ver Galería Completa
             <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
             </svg>
@@ -138,7 +137,7 @@ const products = (await getCollection('products')).slice(0, 3); // Solo 3 produc
               </svg>
               Solicitar Cotización
             </a>
-            <a href="/galeria" class="inline-flex items-center gap-3 border-2 border-white bg-transparent text-white hover:bg-white hover:text-dark-800 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300">
+            <a href="/productos" class="inline-flex items-center gap-3 border-2 border-white bg-transparent text-white hover:bg-white hover:text-dark-800 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
