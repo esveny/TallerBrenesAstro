@@ -266,6 +266,10 @@ import Toast from '../components/Toast.astro';
         return;
       }
       
+
+
+
+      // ENVIAR DATOS A SUPABASE Y EMAILJS
       try {
         const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
         const originalText = button.textContent;
@@ -349,6 +353,10 @@ import Toast from '../components/Toast.astro';
         // Reset reCAPTCHA en caso de error - Descomentar cuando uses reCAPTCHA
         // (window as any).grecaptcha.reset();
       }
+
+
+
+      
     });
   });
 </script>

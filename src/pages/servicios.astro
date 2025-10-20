@@ -9,7 +9,6 @@ import Toast from '../components/Toast.astro';
 import { getCollection } from 'astro:content';
 
 const services = await getCollection('services');
-const categories = [...new Set(services.map(service => service.data.category))];
 ---
 
 <Layout 
@@ -26,34 +25,6 @@ const categories = [...new Set(services.map(service => service.data.category))];
         <p class="text-xl opacity-90 max-w-3xl mx-auto">
           Soluciones integrales en metalurgia con más de 20 años de experiencia
         </p>
-      </div>
-    </section>
-    
-    <!-- Filtros -->
-    <section class="py-8 bg-white shadow-sm">
-      <div class="container mx-auto px-4">
-        <div class="flex flex-wrap justify-center gap-3">
-          <button 
-            class="filter-btn px-6 py-2 rounded-full border-2 border-primary-600 text-primary-600 font-bold hover:bg-primary-600 hover:text-white transition-all duration-300 active"
-            data-filter="todos"
-          >
-            Todos
-          </button>
-          {categories.map(category => (
-            <button 
-              class="filter-btn px-6 py-2 rounded-full border-2 border-primary-600 text-primary-600 font-bold hover:bg-primary-600 hover:text-white transition-all duration-300"
-              data-filter={category}
-            >
-              {category}
-            </button>
-          ))}
-        </div>
-        
-        <div class="text-center mt-4">
-          <span class="filter-counter text-gray-600 font-medium">
-            {services.length} servicios disponibles
-          </span>
-        </div>
       </div>
     </section>
     
@@ -96,11 +67,3 @@ const categories = [...new Set(services.map(service => service.data.category))];
   <Footer />
   <Toast />
 </Layout>
-
-<script>
-  import { initCategoryFilters } from '../lib/filters';
-  
-  document.addEventListener('DOMContentLoaded', () => {
-    initCategoryFilters('services-container');
-  });
-</script>

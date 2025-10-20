@@ -2,7 +2,7 @@ export interface Service {
   id?: string;
   title: string;
   description: string;
-  category: 'Soldadura' | 'Portones' | 'Puertas' | 'Reparaciones';
+  category: '';
   image: string;
   icon?: string;
   created_at?: string;

@@ -9,10 +9,45 @@ import ProductCard from '../components/ProductCard.astro';
 import Toast from '../components/Toast.astro';
 
 import { getCollection } from 'astro:content';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import type { Product } from '../lib/types';
+
+// Función para obtener 3 proyectos destacados desde Supabase
+async function getFeaturedProjects(): Promise<Product[]> {
+  if (!isSupabaseConfigured()) {
+    console.warn('Supabase no está configurado');
+    return [];
+  }
+
+  try {
+    const { data, error } = await supabase!
+      .from('ImagenesTallerBrenes')
+      .select('*')
+      .order('id', { ascending: false })
+      .limit(3); // Solo 3 proyectos destacados
+
+    if (error) {
+      console.error('❌ Error al obtener proyectos destacados:', error);
+      return [];
+    }
+
+    return (data || []).map(item => ({
+      id: item.id?.toString(),
+      name: item.NombreProducto || '',
+      description: item.Descripcion || '',
+      category: item.Categoria || '',
+      image: item.imagen || '',  
+      created_at: item.Created_At
+    }));
+  } catch (error) {
+    console.error('Error de conexión:', error);
+    return [];
+  }
+}
 
 // Obtener contenido
 const services = await getCollection('services');
-const products = (await getCollection('products')).slice(0, 3); // Solo 3 productos destacados
+const products = await getFeaturedProjects();
 ---
 
 <Layout 
@@ -98,10 +133,10 @@ const products = (await getCollection('products')).slice(0, 3); // Solo 3 produc
         <div class="grid md:grid-cols-3 gap-8">
           {products.map(product => (
             <ProductCard 
-              name={product.data.name}
-              description={product.data.description}
-              image={product.data.image}
-              category={product.data.category}
+              name={product.name}
+              description={product.description}
+              image={product.image}
+              category={product.category}
             />
           ))}
         </div>
