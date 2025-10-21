@@ -6,6 +6,7 @@ import Hero from '../components/Hero.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import ProductCard from '../components/ProductCard.astro';
+import EnhancedProductModal from '../components/EnhancedProductModal.astro';
 import Toast from '../components/Toast.astro';
 
 import { getCollection } from 'astro:content';
@@ -31,13 +32,17 @@ async function getFeaturedProjects(): Promise<Product[]> {
       return [];
     }
 
-    return (data || []).map(item => ({
+    return (data || []).map((item: any) => ({
       id: item.id?.toString(),
       name: item.NombreProducto || '',
       description: item.Descripcion || '',
       category: item.Categoria || '',
       image: item.imagen || '',  
-      created_at: item.Created_At
+      created_at: item.Created_At,
+      // Usar el campo images si existe, si no, usar la imagen principal
+      images: item.images && Array.isArray(item.images) && item.images.length > 0 
+        ? item.images 
+        : [item.imagen].filter(Boolean) // Filtrar valores null/undefined
     }));
   } catch (error) {
     console.error('Error de conexión:', error);
@@ -131,12 +136,13 @@ const products = await getFeaturedProjects();
         />
         
         <div class="grid md:grid-cols-3 gap-8">
-          {products.map(product => (
+          {products.map((product: any) => (
             <ProductCard 
               name={product.name}
               description={product.description}
               image={product.image}
               category={product.category}
+              images={product.images}
             />
           ))}
         </div>
@@ -187,4 +193,5 @@ const products = await getFeaturedProjects();
   
   <Footer />
   <Toast />
+  <EnhancedProductModal />
 </Layout>

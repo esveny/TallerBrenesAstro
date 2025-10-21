@@ -16,6 +16,7 @@ export interface Product {
   category: string;
   price?: number;
   image: string;
+  images?: string[]; // Array opcional de imágenes adicionales
   created_at?: string;
   updated_at?: string;
 }

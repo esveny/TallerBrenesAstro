@@ -1,0 +1,631 @@
+---
+// Modal mejorado con zoom y navegación para la galería
+---
+
+<!-- Backdrop del modal -->
+<div 
+  id="enhanced-product-modal" 
+  class="fixed inset-0 bg-black bg-opacity-90 z-50 hidden items-center justify-center p-4"
+  onclick="window.closeEnhancedModal && window.closeEnhancedModal(event)"
+>
+  <!-- Contenido del modal -->
+  <div 
+    class="relative w-full h-full max-w-7xl max-h-[95vh] flex flex-col bg-white rounded-2xl shadow-2xl transform transition-all duration-300 scale-95 opacity-0"
+    onclick="event.stopPropagation()"
+  >
+    <!-- Header del modal -->
+    <div class="flex justify-between items-center p-4 border-b border-gray-200 bg-white rounded-t-2xl">
+      <div class="flex items-center space-x-4">
+        <h2 id="enhanced-modal-title" class="text-xl md:text-2xl font-bold text-dark-800">Proyecto</h2>
+        <span id="enhanced-modal-counter" class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">1 / 1</span>
+      </div>
+      
+      <div class="flex items-center space-x-2">
+        <!-- Controles de zoom -->
+        <div class="hidden md:flex items-center space-x-2 mr-4">
+          <button 
+            id="zoom-out-btn"
+            class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Alejar"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path>
+            </svg>
+          </button>
+          <span id="zoom-level" class="text-sm text-gray-600 min-w-12 text-center">100%</span>
+          <button 
+            id="zoom-in-btn"
+            class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Acercar"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path>
+            </svg>
+          </button>
+          <button 
+            id="reset-zoom-btn"
+            class="p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+            title="Restablecer zoom"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Botón cerrar -->
+        <button 
+          onclick="window.closeEnhancedModal && window.closeEnhancedModal()"
+          class="p-2 text-gray-400 hover:text-gray-600 transition-colors rounded-lg hover:bg-gray-100"
+          title="Cerrar"
+        >
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Contenedor de imagen principal -->
+    <div class="flex-1 relative overflow-hidden bg-gray-50">
+      <!-- Navegación izquierda -->
+      <button 
+        id="prev-image-btn"
+        class="absolute left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+        title="Imagen anterior"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      
+      <!-- Navegación derecha -->
+      <button 
+        id="next-image-btn"
+        class="absolute right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-gray-800 p-3 rounded-full shadow-lg transition-all duration-200 hover:scale-110"
+        title="Siguiente imagen"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+      
+      <!-- Contenedor de imagen con zoom -->
+      <div 
+        id="image-zoom-container" 
+        class="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing"
+      >
+        <img 
+          id="enhanced-modal-image"
+          alt="Proyecto"
+          class="w-full h-full object-contain transition-transform duration-200 ease-out"
+          style="transform-origin: center center;"
+        />
+      </div>
+      
+      <!-- Indicador de zoom en móvil -->
+      <div class="md:hidden absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+        Pellizca para hacer zoom
+      </div>
+    </div>
+    
+    <!-- Panel de información (colapsible en móvil) -->
+    <div id="info-panel" class="bg-white border-t border-gray-200 transition-all duration-300">
+      <!-- Toggle para móvil -->
+      <button 
+        id="toggle-info-btn"
+        class="md:hidden w-full p-3 flex items-center justify-between text-left hover:bg-gray-50"
+      >
+        <span class="font-medium text-gray-800">Información del proyecto</span>
+        <svg id="toggle-icon" class="w-5 h-5 text-gray-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+      
+      <!-- Contenido del panel -->
+      <div id="info-content" class="p-4 md:block">
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Información principal -->
+          <div>
+            <h3 class="text-lg font-semibold text-gray-700 mb-2">Descripción</h3>
+            <p id="enhanced-modal-description" class="text-gray-600 leading-relaxed mb-4"></p>
+            
+            <div class="flex flex-wrap gap-2">
+              <span id="enhanced-modal-category" class="inline-block bg-accent-100 text-accent-800 text-sm font-medium px-4 py-2 rounded-full capitalize"></span>
+            </div>
+          </div>
+          
+          <!-- Acciones -->
+          <div class="flex flex-col space-y-3">
+            <h3 class="text-lg font-semibold text-gray-700">¿Te interesa este proyecto?</h3>
+            <div class="space-y-2">
+              <a 
+                href="/contacto" 
+                class="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-300 w-full"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+                Solicitar Cotización
+              </a>
+              <button 
+                id="share-project-btn"
+                class="inline-flex items-center justify-center gap-2 border-2 border-gray-300 hover:border-gray-400 text-gray-700 font-semibold px-6 py-3 rounded-lg transition-colors duration-300 w-full"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                </svg>
+                Compartir Proyecto
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Thumbnails (miniaturas) -->
+    <div id="thumbnails-container" class="hidden md:block bg-gray-50 border-t border-gray-200 p-4">
+      <div id="thumbnails-scroll" class="flex space-x-3 overflow-x-auto pb-2">
+        <!-- Se llenan dinámicamente -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  interface EnhancedProduct {
+    name: string;
+    description: string;
+    image: string;
+    category: string;
+    images?: string[]; // Array de imágenes adicionales
+  }
+
+  class EnhancedModalManager {
+    private modal: HTMLElement | null = null;
+    private modalContent: HTMLElement | null = null;
+    private imageContainer: HTMLElement | null = null;
+    private image: HTMLImageElement | null = null;
+    private currentProduct: EnhancedProduct | null = null;
+    private currentImageIndex: number = 0;
+    private currentImages: string[] = [];
+    private zoomLevel: number = 1;
+    private minZoom: number = 0.5;
+    private maxZoom: number = 3;
+    private zoomStep: number = 0.25;
+    private isDragging: boolean = false;
+    private dragStart = { x: 0, y: 0 };
+    private imageOffset = { x: 0, y: 0 };
+    private infoPanelOpen: boolean = false;
+
+    constructor() {
+      this.init();
+    }
+
+    private init() {
+      this.modal = document.getElementById('enhanced-product-modal');
+      this.modalContent = this.modal?.querySelector('.bg-white') as HTMLElement;
+      this.imageContainer = document.getElementById('image-zoom-container');
+      this.image = document.getElementById('enhanced-modal-image') as HTMLImageElement;
+      
+      this.setupEventListeners();
+    }
+
+    private setupEventListeners() {
+      // Botones de zoom
+      document.getElementById('zoom-in-btn')?.addEventListener('click', () => this.zoomIn());
+      document.getElementById('zoom-out-btn')?.addEventListener('click', () => this.zoomOut());
+      document.getElementById('reset-zoom-btn')?.addEventListener('click', () => this.resetZoom());
+      
+      // Navegación
+      document.getElementById('prev-image-btn')?.addEventListener('click', () => {
+        console.log('Prev button clicked');
+        this.prevImage();
+      });
+      document.getElementById('next-image-btn')?.addEventListener('click', () => {
+        console.log('Next button clicked');
+        this.nextImage();
+      });
+      
+      // Toggle panel info en móvil
+      document.getElementById('toggle-info-btn')?.addEventListener('click', () => this.toggleInfoPanel());
+      
+      // Compartir
+      document.getElementById('share-project-btn')?.addEventListener('click', () => this.shareProject());
+      
+      // Zoom con rueda del mouse
+      this.imageContainer?.addEventListener('wheel', (e) => this.handleWheel(e));
+      
+      // Drag para pan
+      this.imageContainer?.addEventListener('mousedown', (e) => this.startDrag(e));
+      document.addEventListener('mousemove', (e) => this.drag(e));
+      document.addEventListener('mouseup', () => this.endDrag());
+      
+      // Touch events para móvil
+      this.setupTouchEvents();
+      
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => this.handleKeyboard(e));
+    }
+
+    private setupTouchEvents() {
+      if (!this.imageContainer) return;
+      
+      let touchStartDistance = 0;
+      let touchStartZoom = 1;
+      
+      this.imageContainer.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          // Pinch to zoom
+          touchStartDistance = this.getTouchDistance(e.touches[0], e.touches[1]);
+          touchStartZoom = this.zoomLevel;
+        } else if (e.touches.length === 1) {
+          // Pan
+          this.startDrag(e.touches[0]);
+        }
+      });
+      
+      this.imageContainer.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        
+        if (e.touches.length === 2) {
+          // Pinch to zoom
+          const currentDistance = this.getTouchDistance(e.touches[0], e.touches[1]);
+          const scale = currentDistance / touchStartDistance;
+          this.setZoom(touchStartZoom * scale);
+        } else if (e.touches.length === 1 && this.isDragging) {
+          // Pan
+          this.drag(e.touches[0]);
+        }
+      });
+      
+      this.imageContainer.addEventListener('touchend', () => {
+        this.endDrag();
+      });
+    }
+
+    private getTouchDistance(touch1: Touch, touch2: Touch): number {
+      const dx = touch1.clientX - touch2.clientX;
+      const dy = touch1.clientY - touch2.clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public open(product: EnhancedProduct) {
+      if (!this.modal || !this.modalContent) return;
+      
+      this.currentProduct = product;
+      this.currentImages = product.images || [product.image];
+      this.currentImageIndex = 0;
+      
+      this.updateModalContent();
+      this.showModal();
+      this.resetZoom();
+      this.updateNavigation();
+      this.createThumbnails();
+    }
+
+    private updateModalContent() {
+      if (!this.currentProduct) return;
+      
+      const title = document.getElementById('enhanced-modal-title');
+      const description = document.getElementById('enhanced-modal-description');
+      const category = document.getElementById('enhanced-modal-category');
+      const counter = document.getElementById('enhanced-modal-counter');
+      
+      if (title) title.textContent = this.currentProduct.name;
+      if (description) description.textContent = this.currentProduct.description;
+      if (category) category.textContent = this.currentProduct.category;
+      if (counter) counter.textContent = `${this.currentImageIndex + 1} / ${this.currentImages.length}`;
+      
+      this.updateImage();
+    }
+
+    private updateImage() {
+      if (!this.image) return;
+      
+      const currentImage = this.currentImages[this.currentImageIndex];
+      this.image.src = currentImage;
+      this.image.alt = this.currentProduct?.name || 'Proyecto';
+    }
+
+    private showModal() {
+      if (!this.modal || !this.modalContent) return;
+      
+      this.modal.classList.remove('hidden');
+      this.modal.classList.add('flex');
+      
+      setTimeout(() => {
+        this.modalContent?.classList.remove('scale-95', 'opacity-0');
+        this.modalContent?.classList.add('scale-100', 'opacity-100');
+      }, 10);
+      
+      document.body.style.overflow = 'hidden';
+    }
+
+    public close(event?: Event) {
+      if (!this.modal || !this.modalContent) return;
+      
+      if (event && event.target !== this.modal) return;
+      
+      this.modalContent.classList.remove('scale-100', 'opacity-100');
+      this.modalContent.classList.add('scale-95', 'opacity-0');
+      
+      setTimeout(() => {
+        this.modal?.classList.add('hidden');
+        this.modal?.classList.remove('flex');
+        document.body.style.overflow = '';
+      }, 300);
+    }
+
+    private zoomIn() {
+      this.setZoom(Math.min(this.zoomLevel + this.zoomStep, this.maxZoom));
+    }
+
+    private zoomOut() {
+      this.setZoom(Math.max(this.zoomLevel - this.zoomStep, this.minZoom));
+    }
+
+    private resetZoom() {
+      this.setZoom(1);
+      this.imageOffset = { x: 0, y: 0 };
+      this.updateImageTransform();
+    }
+
+    private setZoom(zoom: number) {
+      this.zoomLevel = Math.max(this.minZoom, Math.min(this.maxZoom, zoom));
+      this.updateZoomDisplay();
+      this.updateImageTransform();
+    }
+
+    private updateZoomDisplay() {
+      const display = document.getElementById('zoom-level');
+      if (display) {
+        display.textContent = `${Math.round(this.zoomLevel * 100)}%`;
+      }
+    }
+
+    private updateImageTransform() {
+      if (!this.image) return;
+      
+      this.image.style.transform = `translate(${this.imageOffset.x}px, ${this.imageOffset.y}px) scale(${this.zoomLevel})`;
+    }
+
+    private handleWheel(e: WheelEvent) {
+      e.preventDefault();
+      
+      const delta = e.deltaY > 0 ? -this.zoomStep : this.zoomStep;
+      this.setZoom(this.zoomLevel + delta);
+    }
+
+    private startDrag(e: MouseEvent | Touch) {
+      if (this.zoomLevel <= 1) return;
+      
+      this.isDragging = true;
+      this.dragStart = { x: e.clientX, y: e.clientY };
+      
+      if (this.imageContainer) {
+        this.imageContainer.style.cursor = 'grabbing';
+      }
+    }
+
+    private drag(e: MouseEvent | Touch) {
+      if (!this.isDragging || this.zoomLevel <= 1) return;
+      
+      const dx = e.clientX - this.dragStart.x;
+      const dy = e.clientY - this.dragStart.y;
+      
+      this.imageOffset.x += dx;
+      this.imageOffset.y += dy;
+      
+      this.dragStart = { x: e.clientX, y: e.clientY };
+      this.updateImageTransform();
+    }
+
+    private endDrag() {
+      this.isDragging = false;
+      
+      if (this.imageContainer) {
+        this.imageContainer.style.cursor = this.zoomLevel > 1 ? 'grab' : 'grab';
+      }
+    }
+
+    private prevImage() {
+      console.log('prevImage called:', {
+        currentIndex: this.currentImageIndex,
+        canGoPrev: this.currentImageIndex > 0
+      });
+      
+      if (this.currentImageIndex > 0) {
+        this.currentImageIndex--;
+        this.updateModalContent();
+        this.resetZoom();
+        this.updateNavigation(); // Asegurar que la navegación se actualice
+      }
+    }
+
+    private nextImage() {
+      console.log('nextImage called:', {
+        currentIndex: this.currentImageIndex,
+        totalImages: this.currentImages.length,
+        canGoNext: this.currentImageIndex < this.currentImages.length - 1
+      });
+      
+      if (this.currentImageIndex < this.currentImages.length - 1) {
+        this.currentImageIndex++;
+        this.updateModalContent();
+        this.resetZoom();
+        this.updateNavigation(); // Asegurar que la navegación se actualice
+      }
+    }
+
+    private updateNavigation() {
+      const prevBtn = document.getElementById('prev-image-btn');
+      const nextBtn = document.getElementById('next-image-btn');
+      
+      // Debug log
+      console.log('updateNavigation:', {
+        currentIndex: this.currentImageIndex,
+        totalImages: this.currentImages.length,
+        prevBtn: !!prevBtn,
+        nextBtn: !!nextBtn
+      });
+      
+      if (prevBtn) {
+        const shouldShowPrev = this.currentImageIndex > 0;
+        prevBtn.style.display = shouldShowPrev ? 'flex' : 'none';
+        prevBtn.style.visibility = shouldShowPrev ? 'visible' : 'hidden';
+      }
+      
+      if (nextBtn) {
+        const shouldShowNext = this.currentImageIndex < this.currentImages.length - 1;
+        nextBtn.style.display = shouldShowNext ? 'flex' : 'none';
+        nextBtn.style.visibility = shouldShowNext ? 'visible' : 'hidden';
+      }
+    }
+
+    private createThumbnails() {
+      const container = document.getElementById('thumbnails-scroll');
+      if (!container || this.currentImages.length <= 1) return;
+      
+      container.innerHTML = '';
+      
+      this.currentImages.forEach((image, index) => {
+        const thumb = document.createElement('button');
+        thumb.className = `flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+          index === this.currentImageIndex ? 'border-primary-500 ring-2 ring-primary-200' : 'border-gray-300 hover:border-gray-400'
+        }`;
+        
+        const img = document.createElement('img');
+        img.src = image;
+        img.className = 'w-full h-full object-cover';
+        img.alt = `Vista ${index + 1}`;
+        
+        thumb.appendChild(img);
+        thumb.addEventListener('click', () => {
+          this.currentImageIndex = index;
+          this.updateModalContent();
+          this.resetZoom();
+          this.createThumbnails(); // Actualizar estados activos
+        });
+        
+        container.appendChild(thumb);
+      });
+    }
+
+    private toggleInfoPanel() {
+      const content = document.getElementById('info-content');
+      const icon = document.getElementById('toggle-icon');
+      
+      this.infoPanelOpen = !this.infoPanelOpen;
+      
+      if (content) {
+        content.style.display = this.infoPanelOpen ? 'block' : 'none';
+      }
+      
+      if (icon) {
+        icon.style.transform = this.infoPanelOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
+    }
+
+    private shareProject() {
+      if (!this.currentProduct) return;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: this.currentProduct.name,
+          text: this.currentProduct.description,
+          url: window.location.href
+        });
+      } else {
+        // Fallback para navegadores sin soporte
+        navigator.clipboard.writeText(window.location.href);
+        // Usar el sistema de toast si está disponible
+        if ((window as any).showSuccess) {
+          (window as any).showSuccess('¡Enlace copiado al portapapeles!');
+        }
+      }
+    }
+
+    private handleKeyboard(e: KeyboardEvent) {
+      if (!this.modal?.classList.contains('flex')) return;
+      
+      switch (e.key) {
+        case 'Escape':
+          this.close();
+          break;
+        case 'ArrowLeft':
+          this.prevImage();
+          break;
+        case 'ArrowRight':
+          this.nextImage();
+          break;
+        case '+':
+        case '=':
+          this.zoomIn();
+          break;
+        case '-':
+          this.zoomOut();
+          break;
+        case '0':
+          this.resetZoom();
+          break;
+      }
+    }
+  }
+
+  // Crear instancia global
+  const enhancedModalManager = new EnhancedModalManager();
+
+  // Funciones globales
+  (window as any).openEnhancedProductModal = function(product: EnhancedProduct) {
+    enhancedModalManager.open(product);
+  };
+
+  (window as any).closeEnhancedModal = function(event?: Event) {
+    enhancedModalManager.close(event);
+  };
+
+  // Declaraciones TypeScript
+  declare global {
+    interface Window {
+      openEnhancedProductModal: (product: EnhancedProduct) => void;
+      closeEnhancedModal: (event?: Event) => void;
+    }
+  }
+</script>
+
+<style>
+  #enhanced-product-modal .bg-white {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  
+  #image-zoom-container {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+  }
+  
+  #enhanced-modal-image {
+    max-width: none;
+    max-height: none;
+  }
+  
+  /* Scrollbar personalizada para thumbnails */
+  #thumbnails-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+  
+  #thumbnails-scroll::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  #thumbnails-scroll::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+  
+  #thumbnails-scroll::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+  }
+</style>
