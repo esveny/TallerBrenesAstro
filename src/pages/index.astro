@@ -28,7 +28,7 @@ async function getFeaturedProjects(): Promise<Product[]> {
       .limit(3); // Solo 3 proyectos destacados
 
     if (error) {
-      console.error('❌ Error al obtener proyectos destacados:', error);
+      console.error('Error al obtener proyectos destacados:', error);
       return [];
     }
 

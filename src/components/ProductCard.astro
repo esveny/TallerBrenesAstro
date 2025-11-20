@@ -27,7 +27,7 @@ const { name, description, image, category, images = [] } = Astro.props;
             class={`absolute inset-0 w-full h-full object-contain transition-all duration-500 ${index === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-105'}`}
             loading="lazy"
             data-carousel-item={index}
-            onerror="console.error('❌ Error cargando imagen:', this.src);"
+            onerror="console.error('Error cargando imagen:', this.src);"
           />
         ))}
         
@@ -78,7 +78,7 @@ const { name, description, image, category, images = [] } = Astro.props;
         alt={name}
         class="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
         loading="lazy"
-        onerror="console.error('❌ Error cargando imagen:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        onerror="console.error('Error cargando imagen:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';"
       />
     )}
     

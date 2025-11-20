@@ -23,21 +23,43 @@ async function getProductsFromSupabase(): Promise<Product[]> {
       .rpc('get_products_safe');
 
     if (error) {
-      console.error('❌ Error al obtener productos via RPC:', error);
+      console.error(' Error al obtener productos via RPC:', error);
       return [];
     }
 
     // Los datos ya vienen mapeados correctamente desde la RPC
-    return (data || []).map((item: any) => ({
-      id: item.id?.toString(),
-      name: item.name || '',
-      description: item.description || '',
-      category: item.category || '',
-      image: item.image || '',
-      created_at: item.created_at,
-      // Las imágenes ya vienen procesadas desde la RPC
-      images: Array.isArray(item.images) ? item.images : []
-    }));
+    return (data || []).map((item: any) => {
+      // El campo images viene como JSONB desde la función RPC
+      let parsedImages: string[] = [];
+      
+      if (item.images) {
+        if (typeof item.images === 'string') {
+          // Si viene como string JSON, parsearlo
+          try {
+            const parsed = JSON.parse(item.images);
+            parsedImages = Array.isArray(parsed) ? parsed.filter((img: any) => img && typeof img === 'string') : [];
+          } catch (e) {
+            console.warn('Error parseando images desde RPC:', e);
+          }
+        } else if (Array.isArray(item.images)) {
+          // Si ya viene como array (lo más común con JSONB)
+          parsedImages = item.images.filter((img: any) => img && typeof img === 'string');
+        }
+      }
+      
+      // Usar la primera imagen como imagen principal, o la imagen individual si existe
+      const mainImage = parsedImages[0] || item.image || '';
+      
+      return {
+        id: item.id?.toString(),
+        name: item.name || '',
+        description: item.description || '',
+        category: item.category || '',
+        image: mainImage,
+        created_at: item.created_at,
+        images: parsedImages.length > 0 ? parsedImages : (mainImage ? [mainImage] : [])
+      };
+    });
   } catch (error) {
     console.error('Error de conexión:', error);
     return [];
@@ -53,22 +75,46 @@ async function getProductsDirectly(): Promise<Product[]> {
       .order('id', { ascending: false });
 
     if (error) {
-      console.error('❌ Error al obtener productos:', error);
+      console.error(' Error al obtener productos:', error);
       return [];
     }
 
-    return (data || []).map((item: any) => ({
-      id: item.id?.toString(),
-      name: item.NombreProducto || '',
-      description: item.Descripcion || '',
-      category: item.Categoria || '',
-      image: item.imagen || '',  
-      created_at: item.Created_At,
-      // Usar el campo images si existe, si no, usar la imagen principal
-      images: item.images && Array.isArray(item.images) && item.images.length > 0 
-        ? item.images 
-        : [item.imagen].filter(Boolean) // Filtrar valores null/undefined
-    }));
+    return (data || []).map((item: any) => {
+      // Parsear el campo images si es un string JSON
+      let parsedImages: string[] = [];
+      
+      if (item.images) {
+        if (typeof item.images === 'string') {
+          try {
+            // Si es un string JSON, parsearlo
+            const parsed = JSON.parse(item.images);
+            if (Array.isArray(parsed)) {
+              parsedImages = parsed.filter((img: any) => img && typeof img === 'string');
+            }
+          } catch (e) {
+            console.warn('Error parseando images JSON:', e);
+          }
+        } else if (Array.isArray(item.images)) {
+          // Si ya es un array, usarlo directamente
+          parsedImages = item.images.filter((img: any) => img && typeof img === 'string');
+        }
+      }
+      
+      // Si no hay imágenes en el campo images, usar la imagen principal
+      if (parsedImages.length === 0 && item.imagen) {
+        parsedImages = [item.imagen];
+      }
+      
+      return {
+        id: item.id?.toString(),
+        name: item.NombreProducto || '',
+        description: item.Descripcion || '',
+        category: item.Categoria || '',
+        image: parsedImages[0] || item.imagen || '',  
+        created_at: item.Created_At,
+        images: parsedImages
+      };
+    });
   } catch (error) {
     console.error('Error de conexión directa:', error);
     return [];
