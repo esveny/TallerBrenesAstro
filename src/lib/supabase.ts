@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
 
-// Cliente de Supabase (preparado para uso futuro)
+// Crear el cliente de Supabase
 export const supabase = supabaseUrl && supabaseAnonKey 
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
@@ -15,5 +15,5 @@ export const isSupabaseConfigured = (): boolean => {
 
 // Log de configuración (solo en desarrollo)
 if (import.meta.env.DEV) {
-  console.log('🔗 Supabase configurado:', isSupabaseConfigured());
+  console.log('Supabase configurado:', isSupabaseConfigured());
 }

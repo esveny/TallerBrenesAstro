@@ -1,93 +1,137 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
-import Hero from '../components/Hero.astro';
-import SectionTitle from '../components/SectionTitle.astro';
-import ServiceCard from '../components/ServiceCard.astro';
-import ProductCard from '../components/ProductCard.astro';
-import EnhancedProductModal from '../components/EnhancedProductModal.astro';
-import Toast from '../components/Toast.astro';
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import Hero from "../components/Hero.astro";
+import SectionTitle from "../components/SectionTitle.astro";
+import ServiceCard from "../components/ServiceCard.astro";
+import ProductCard from "../components/ProductCard.astro";
+import EnhancedProductModal from "../components/EnhancedProductModal.astro";
+import Toast from "../components/Toast.astro";
+import WhatsAppButton from "../components/WhatsAppButton.astro";
 
-import { getCollection } from 'astro:content';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import type { Product } from '../lib/types';
+import { getCollection } from "astro:content";
+import { supabase, isSupabaseConfigured } from "../lib/supabase";
+import type { Product } from "../lib/types";
 
 // Función para obtener 3 proyectos destacados desde Supabase
 async function getFeaturedProjects(): Promise<Product[]> {
   if (!isSupabaseConfigured()) {
-    console.warn('Supabase no está configurado');
+    console.warn("Supabase no está configurado");
     return [];
   }
 
   try {
+    // Obtener todos los productos disponibles
     const { data, error } = await supabase!
-      .from('ImagenesTallerBrenes')
-      .select('*')
-      .order('id', { ascending: false })
-      .limit(3); // Solo 3 proyectos destacados
+      .rpc('get_products_safe');
 
     if (error) {
-      console.error('Error al obtener proyectos destacados:', error);
+      console.error("Error al obtener proyectos destacados:", error);
       return [];
     }
 
-    return (data || []).map((item: any) => ({
-      id: item.id?.toString(),
-      name: item.NombreProducto || '',
-      description: item.Descripcion || '',
-      category: item.Categoria || '',
-      image: item.imagen || '',  
-      created_at: item.Created_At,
-      // Usar el campo images si existe, si no, usar la imagen principal
-      images: item.images && Array.isArray(item.images) && item.images.length > 0 
-        ? item.images 
-        : [item.imagen].filter(Boolean) // Filtrar valores null/undefined
-    }));
+    // Parsear todos los productos
+    const allProducts = (data || []).map((item: any) => {
+      // El campo images viene como JSONB desde la función RPC
+      let parsedImages: string[] = [];
+      
+      if (item.images) {
+        if (typeof item.images === 'string') {
+          // Si viene como string JSON, parsearlo
+          try {
+            const parsed = JSON.parse(item.images);
+            parsedImages = Array.isArray(parsed) ? parsed.filter((img: any) => img && typeof img === 'string') : [];
+          } catch (e) {
+            console.warn('Error parseando images desde RPC:', e);
+          }
+        } else if (Array.isArray(item.images)) {
+          // Si ya viene como array (lo más común con JSONB)
+          parsedImages = item.images.filter((img: any) => img && typeof img === 'string');
+        }
+      }
+      
+      // Usar la primera imagen como imagen principal, o la imagen individual si existe
+      const mainImage = parsedImages[0] || item.image || '';
+      
+      return {
+        id: item.id?.toString(),
+        name: item.name || '',
+        description: item.description || '',
+        category: item.category || '',
+        image: mainImage,
+        created_at: item.created_at,
+        images: parsedImages.length > 0 ? parsedImages : (mainImage ? [mainImage] : [])
+      };
+    });
+
+    // Crear una semilla basada en la hora actual (cambia cada hora)
+    const now = new Date();
+    const hourSeed = now.getFullYear() * 1000000 + 
+                     (now.getMonth() + 1) * 10000 + 
+                     now.getDate() * 100 + 
+                     now.getHours();
+    
+    // Función de random seeded simple
+    const seededRandom = (seed: number) => {
+      const x = Math.sin(seed++) * 10000;
+      return x - Math.floor(x);
+    };
+    
+    // Mezclar array con la semilla
+    const shuffled = [...allProducts];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(seededRandom(hourSeed + i) * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    
+    // Retornar solo los primeros 3
+    return shuffled.slice(0, 3);
+    
   } catch (error) {
-    console.error('Error de conexión:', error);
+    console.error("Error de conexión:", error);
     return [];
   }
 }
 
 // Obtener contenido
-const services = await getCollection('services');
+const services = await getCollection("services");
 const products = await getFeaturedProjects();
 ---
 
-<Layout 
+<Layout
   title="Taller Industrial Brenes - Portones, Estructuras Metálicas y Soldadura"
   description="Más de 20 años fabricando portones, estructuras metálicas y servicios de soldadura en Costa Rica. Calidad garantizada y negocio 100% nacional."
 >
   <Navbar />
-  
+
   <main>
     <Hero />
-    
+
     <!-- ¿Por qué elegirnos? -->
     <section class="py-20 bg-gray-50">
       <div class="container mx-auto px-4">
-        <SectionTitle 
-          title="¿Por qué Elegirnos?" 
+        <SectionTitle
+          title="¿Por qué Elegirnos?"
           subtitle="Razones que nos convierten en la mejor opción para sus proyectos"
         />
-        
+
         <div class="grid md:grid-cols-3 gap-8">
-          <ServiceCard 
+          <ServiceCard
             title="Negocio Nacional"
             description="Empresa 100% costarricense, comprometida con el desarrollo local y el apoyo a la economía nacional. Conocemos las necesidades específicas del mercado costarricense."
             icon="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAAAsTAAALEwEAmpwYAAAFW0lEQVR4nO2d229URRzHfwKiosYrKniJL774WhNR6ZlSUIFWdqa6Rn0xMQpeCP4LPvqA1GIw8uojUTDtzFKMoV5iQrRCafckBm3E0nDpOXtmTtGHQuyYWSox4dp0zv5mdueTfJNNds/Jfn/f3Tlzzp79DUAgEAgEAoFAIBAIOMRT7MB9ERPPEiq2Eip2RYx/QxgfJVSMEyYyQsVMXRcej5vn6q+hYpfZxmy7ulxZju3DG9q6+5cRKvojynsJ5UcJ47OECb0w8Vmzr4iKHWbfq8p7bsH26RxrKG8jTOwmjOcLL/g1A8kjKj4nPXwdgL4BWpX16ys3EVp5J2L89+KLfnlFjP9GqHjbvBdoFcwQEFHxfkTFJFbhLwmC8hMR49uafnjqYLwrYvwP7IKTKwYhJjtK4kVoNp7e9NXK+rjrQJHJ9Q1NA8+U+x+BZiBiA5vq00QHCkvmJTMhqLwEvkLI0BJCxYd2ppICK4RZQkXf4+U9S8EnVpUH744Y/wG/gMKWvl/dxe8CHyBl/kBExYgDRdOWvw1xZ3ngQXAZUtr/aH1ujV4sUYjMDC7qGXgMXCRJ/l6ZyPx4KnPdzEqkmqzVag+DSyRJcnua5Uewi5M2LoQxKeWd4AJa6xuTLD+AXZS00cryg8e0xr+Ekch8J3oxJNo34WPU4teUej7J1GzLBpCp2aks70Ip/snp6eWpVKewi5BiK1NnTp89e3/DA0gztQ/dvHRDSaa+bGjxEyk7sU2nrkmp5xpSfK314kSqUXTD0i0lMj9qalN4AIlSW7DNpo6qJqffLH7OL9UkttHUUSUyP2FqVFgASaZewzaZOq6pmnqlyAAOYRtMXVeW/1xM8ZV6At2c9ER5/qT1AGKA3TGADoLr0WdWi68BFscAZxwwpn1QFSAZAlhiLYAxgDXYpmLPNAbQYS2AGGAHtqHYP31kLYAqwLADhrRn+slK8UcAbo0BzjtgSHum81WA22x8+jsdMKN9lDl2LjiAGGAbtpHYU1UBttr4BvRhG4k9VRWg10YAAttI7K8GbARQdcCI9lHV+inUAokB/sQ2EnuqKsBxGwHUsI3EnqoKkNoIYAbbSOyvZkIA4H8AYQgC3CEoHIQB8SAcpqGAOw0NJ2KAfiIWLkUA4qWIcDEO0C/GhcvRgHg5eu4HmXPYZmL/dG4YYBnYwPy85oAh7ZOqAIesFH8ugPCjPMxb260FYG6xcMCQ9kzt1gLQAItigFMOmNKe6LS5mQ1sYm63c8CY9kFVgE/BNuHm3Bz35tx6COH2dH0tJVL9CEUxVVOvYhtMHVdNqZcLCyD8RSm/qhKZT2it7d0VfTmmpHwL22jqrt6AotFaL0qz/BcHzGqXlMh8pCF/UzWEP2rnl0qpdQ0p/sUQMrUX3bR0Q0mWfwFIzTpOYptPW7VZh8H0R2j5djW1fCNgkkjV18IB9IIjLcsGsYuRNlpZflBrvdSlpn2HW+aTL9VolmV3gEtMTf21olXaVqZp+hC4SGjc6gDN2ro4orzqfOvi/zCNrgkV3zXRJ/9bUtrnRqPWebWvZ+IDQsU/2AUkC2xf37Z5uLgmTEUTlSov+LqAQ0ezLGfSzvav8G0Jk/bSoFsNum3QzkRnxPiv2AUmVxIV4xEVG6CZIa8P3VxfmpDxCYeGm4l2Jt4z7w1aBbMuSzvjW1DPG6g4FlG+2bs1YgpZypCKvoiJtPDxnXIVljK82ip7PZWNhPLtERNHrExhzT4oP1zfJxUbmn61PJuQ7v57O0qVtRHj70aMf0Io/7p+lm2WrqW8dnE52wuPzQF0ZO41O802Ztu1dO892D4CgUAgEAgEAoFAAP7Hv1NE0n8SNBkfAAAAAElFTkSuQmCC"
             delay={0}
           />
-          
-          <ServiceCard 
+
+          <ServiceCard
             title="Calidad Garantizada"
             description="Utilizamos materiales de primera calidad y técnicas especializadas. Cada proyecto pasa por rigurosos controles de calidad para garantizar durabilidad y resistencia excepcionales."
             icon="https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/CalidadAzulChechAmarillo-Icono.svg"
             delay={0.2}
           />
-          
-          <ServiceCard 
+
+          <ServiceCard
             title="Más de 20 Años de Trayectoria"
             description="Con más de dos décadas en el mercado, hemos perfeccionado nuestras técnicas y construido una sólida reputación. Miles de clientes satisfechos avalan nuestro trabajo."
             icon="https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/TrofeoFondoRojo-Icono.svg"
@@ -96,73 +140,122 @@ const products = await getFeaturedProjects();
         </div>
       </div>
     </section>
-    
+
     <!-- Nuestros Servicios -->
     <section class="py-20">
       <div class="container mx-auto px-4">
         <SectionTitle title="Nuestros Servicios" />
-        
+
         <div class="grid md:grid-cols-3 gap-8">
-          {services.map((service, index) => (
-            <ServiceCard 
-              title={service.data.title}
-              description={service.data.description}
-              icon={service.data.icon || '🔧'}
-              delay={index * 0.2}
-            />
-          ))}
+          {
+            services.map((service, index) => (
+              <ServiceCard
+                title={service.data.title}
+                description={service.data.description}
+                icon={service.data.icon || "🔧"}
+                delay={index * 0.2}
+              />
+            ))
+          }
         </div>
-        
+
         <div class="text-center mt-10">
-          <a href="/servicios" class="inline-flex items-center gap-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-primary-500/25 transform hover:scale-105 transition-all duration-300 border border-primary-400/20">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          <a
+            href="/servicios"
+            class="inline-flex items-center gap-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-primary-500/25 transform hover:scale-105 transition-all duration-300 border border-primary-400/20"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
             </svg>
             Ver Todos los Servicios
-            <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            <svg
+              class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
             </svg>
           </a>
         </div>
       </div>
     </section>
-    
+
     <!-- Galería Destacada -->
     <section class="py-20 bg-gray-50">
       <div class="container mx-auto px-4">
-        <SectionTitle 
-          title="Galería Destacada" 
+        <SectionTitle
+          title="Galería Destacada"
           subtitle="Algunos de nuestros proyectos más destacados"
         />
-        
+
         <div class="grid md:grid-cols-3 gap-8">
-          {products.map((product: any) => (
-            <ProductCard 
-              name={product.name}
-              description={product.description}
-              image={product.image}
-              category={product.category}
-              images={product.images}
-            />
-          ))}
+          {
+            products.map((product: any) => (
+              <ProductCard
+                name={product.name}
+                description={product.description}
+                image={product.image}
+                category={product.category}
+                images={product.images}
+              />
+            ))
+          }
         </div>
-        
+
         <div class="text-center mt-10">
-          <a href="/productos" class="inline-flex items-center gap-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-primary-500/25 transform hover:scale-105 transition-all duration-300 border border-primary-400/20">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+          <a
+            href="/productos"
+            class="inline-flex items-center gap-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-primary-500/25 transform hover:scale-105 transition-all duration-300 border border-primary-400/20"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              ></path>
             </svg>
             Ver Galería Completa
-            <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            <svg
+              class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
             </svg>
           </a>
         </div>
       </div>
     </section>
-    
+
     <!-- Call to Action -->
-    <section class="py-20 bg-gradient-to-r from-dark-800 to-primary-800 text-white">
+    <section
+      class="py-20 bg-gradient-to-r from-dark-800 to-primary-800 text-white"
+    >
       <div class="container mx-auto px-4 text-center">
         <div class="max-w-3xl mx-auto">
           <h2 class="text-4xl font-bold mb-6 scroll-animate fade-up">
@@ -171,17 +264,49 @@ const products = await getFeaturedProjects();
           <p class="text-xl mb-8 opacity-90 scroll-animate fade-up">
             Contáctanos para una cotización gratuita y sin compromiso
           </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center items-center scroll-animate fade-up">
-            <a href="/contacto" class="inline-flex items-center gap-3 bg-white text-dark-800 hover:bg-gray-100 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300 border border-gray-200">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+          <div
+            class="flex flex-col sm:flex-row gap-4 justify-center items-center scroll-animate fade-up"
+          >
+            <a
+              href="/contacto"
+              class="inline-flex items-center gap-3 bg-white text-dark-800 hover:bg-gray-100 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300 border border-gray-200"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                ></path>
               </svg>
               Solicitar Cotización
             </a>
-            <a href="/productos" class="inline-flex items-center gap-3 border-2 border-white bg-transparent text-white hover:bg-white hover:text-dark-800 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+            <a
+              href="/productos"
+              class="inline-flex items-center gap-3 border-2 border-white bg-transparent text-white hover:bg-white hover:text-dark-800 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                ></path>
               </svg>
               Ver Proyectos
             </a>
@@ -190,8 +315,9 @@ const products = await getFeaturedProjects();
       </div>
     </section>
   </main>
-  
+
   <Footer />
   <Toast />
   <EnhancedProductModal />
+  <WhatsAppButton />
 </Layout>

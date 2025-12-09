@@ -1,23 +1,26 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
-import SectionTitle from '../components/SectionTitle.astro';
-import Toast from '../components/Toast.astro';
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+import SectionTitle from "../components/SectionTitle.astro";
+import Toast from "../components/Toast.astro";
+import WhatsAppButton from "../components/WhatsAppButton.astro";
 ---
 
-<Layout 
+<Layout
   title="Contacto - Taller Industrial Brenes"
   description="Contáctenos para cotizaciones y consultas. Teléfono: +506 8931-8268. Email: tallerind.brenesaso@gmail.com. Ubicados en Rincón de Arias, Grecia."
 >
   <Navbar />
-  
+
   <!-- reCAPTCHA v2 Script - Descomentar cuando tengas dominio real -->
   <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
-  
+
   <main>
     <!-- Hero Section -->
-    <section class="bg-gradient-to-r from-primary-800 to-dark-800 text-white py-20">
+    <section
+      class="bg-gradient-to-r from-primary-800 to-dark-800 text-white py-20"
+    >
       <div class="container mx-auto px-4 text-center">
         <h1 class="text-5xl font-bold mb-6">Contáctenos</h1>
         <p class="text-xl opacity-90">
@@ -25,54 +28,67 @@ import Toast from '../components/Toast.astro';
         </p>
       </div>
     </section>
-    
+
     <!-- Información de contacto y formulario -->
     <section class="py-20">
       <div class="container mx-auto px-4">
         <div class="grid lg:grid-cols-2 gap-12">
           <!-- Información de contacto -->
           <div>
-            <SectionTitle 
-              title="Información de Contacto"
-              centered={false}
-            />
-            
+            <SectionTitle title="Información de Contacto" centered={false} />
+
             <div class="space-y-6">
               <!-- Ubicación -->
-              <div class="flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-lg card-hover">
-                <div class="flex-shrink-0 w-12 h-12 bg-accent-100 rounded-full flex items-center justify-center">
+              <div
+                class="flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-lg card-hover"
+              >
+                <div
+                  class="flex-shrink-0 w-12 h-12 bg-accent-100 rounded-full flex items-center justify-center"
+                >
                   <span class="text-2xl">📍</span>
                 </div>
                 <div>
-                  <h3 class="text-xl font-bold text-dark-800 mb-2">Ubicación</h3>
-                  <p class="text-gray-600">Rincón de Arias, Grecia, Costa Rica</p>
+                  <h3 class="text-xl font-bold text-dark-800 mb-2">
+                    Ubicación
+                  </h3>
+                  <p class="text-gray-600">
+                    Rincón de Arias, Grecia, Costa Rica
+                  </p>
                 </div>
               </div>
-              
+
               <!-- Teléfono -->
-              <div class="flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-lg card-hover">
-                <div class="flex-shrink-0 w-12 h-12 bg-accent-100 rounded-full flex items-center justify-center">
+              <div
+                class="flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-lg card-hover"
+              >
+                <div
+                  class="flex-shrink-0 w-12 h-12 bg-accent-100 rounded-full flex items-center justify-center"
+                >
                   <span class="text-2xl">📱</span>
                 </div>
                 <div>
                   <h3 class="text-xl font-bold text-dark-800 mb-2">Teléfono</h3>
-                  <a 
-                    href="tel:+50689318268" 
+                  <a
+                    href="tel:+50689318268"
                     class="text-accent-600 hover:text-accent-800 font-semibold"
                   >
                     +506 8931-8268
                   </a>
                 </div>
               </div>
-              
+
               <!-- Email -->
-              <div class="flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-lg card-hover">
-                <div class="flex-shrink-0 w-12 h-12 bg-accent-100 rounded-full flex items-center justify-center">
+              <div
+                class="flex items-start space-x-4 p-6 bg-white rounded-2xl shadow-lg card-hover"
+              >
+                <div
+                  class="flex-shrink-0 w-12 h-12 bg-accent-100 rounded-full flex items-center justify-center"
+                >
                   <span class="text-2xl">✉️</span>
                 </div>
                 <div>
                   <h3 class="text-xl font-bold text-dark-800 mb-2">Email</h3>
-                  <a 
+                  <a
                     href="mailto:tallerind.brenesaso@gmail.com"
                     class="text-accent-600 hover:text-accent-800 font-semibold"
                   >
@@ -82,73 +98,81 @@ import Toast from '../components/Toast.astro';
               </div>
             </div>
           </div>
-          
+
           <!-- Formulario de contacto -->
           <div>
-            <SectionTitle 
-              title="Envíanos un Mensaje"
-              centered={false}
-            />
-            
+            <SectionTitle title="Envíanos un Mensaje" centered={false} />
+
             <form id="contact-form" class="bg-white p-8 rounded-2xl shadow-lg">
               <div class="grid md:grid-cols-2 gap-6 mb-6">
                 <div>
-                  <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    for="name"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Nombre completo *
                   </label>
-                  <input 
-                    type="text" 
-                    id="name" 
-                    name="name" 
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
                     required
                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="Su nombre completo"
                   />
                 </div>
-                
+
                 <div>
-                  <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                  <label
+                    for="phone"
+                    class="block text-sm font-medium text-gray-700 mb-2"
+                  >
                     Teléfono *
                   </label>
-                  <input 
-                    type="tel" 
-                    id="phone" 
-                    name="phone" 
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
                     required
                     class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                     placeholder="+506 0000-0000"
                   />
                 </div>
               </div>
-              
+
               <div class="mb-6">
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  for="email"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Correo electrónico *
                 </label>
-                <input 
-                  type="email" 
-                  id="email" 
-                  name="email" 
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
                   required
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   placeholder="su.email@ejemplo.com"
                 />
               </div>
-              
+
               <div class="mb-6">
-                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                <label
+                  for="message"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
                   Mensaje *
                 </label>
-                <textarea 
-                  id="message" 
-                  name="message" 
-                  rows="5" 
+                <textarea
+                  id="message"
+                  name="message"
+                  rows="5"
                   required
                   class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Cuéntenos sobre su proyecto..."
-                ></textarea>
+                  placeholder="Cuéntenos sobre su proyecto..."></textarea>
               </div>
-              
+
               <!-- reCAPTCHA v2 - Descomentar cuando tengas dominio real -->
               <!-- 
               <div class="mb-6 flex justify-center">
@@ -160,9 +184,9 @@ import Toast from '../components/Toast.astro';
                 ></div>
               </div>
               -->
-              
-              <button 
-                type="submit" 
+
+              <button
+                type="submit"
                 id="submit-button"
                 class="w-full py-5 px-6 bg-primary-600 text-white font-bold text-lg rounded-xl transition-all duration-300 hover:bg-primary-700 hover:transform hover:scale-105 shadow-lg"
               >
@@ -173,35 +197,37 @@ import Toast from '../components/Toast.astro';
         </div>
       </div>
     </section>
-    
+
     <!-- Mapa -->
     <section class="py-20 bg-gray-50">
       <div class="container mx-auto px-4">
         <SectionTitle title="Nuestra Ubicación" />
-        
+
         <div class="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <iframe 
+          <iframe
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d982.1234217361988!2d-84.33738913038358!3d10.058573499378118!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8fa05994469d327f%3A0x7313abdbc02de9d!2sTaller%20Industrial%20Brenes%20y%20Asociados%20de%20Grecia%20S.A!5e0!3m2!1ses-419!2scr!4v1752722856890!5m2!1ses-419!2scr"
-            width="100%" 
-            height="500" 
-            style="border:0;" 
-            allowfullscreen="" 
-            loading="lazy" 
+            width="100%"
+            height="500"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"
             class="w-full"
           >
           </iframe>
         </div>
-        
+
         <p class="text-center text-gray-600 mt-6">
-          Visítanos en nuestra instalación para conocer más sobre nuestros servicios
+          Visítanos en nuestra instalación para conocer más sobre nuestros
+          servicios
         </p>
       </div>
     </section>
   </main>
-  
+
   <Footer />
   <Toast />
+  <WhatsAppButton />
 </Layout>
 
 <script>
@@ -221,13 +247,13 @@ import Toast from '../components/Toast.astro';
     }
   };
   */
-  
-  document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('contact-form') as HTMLFormElement;
-    
-    form?.addEventListener('submit', async (e) => {
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("contact-form") as HTMLFormElement;
+
+    form?.addEventListener("submit", async (e) => {
       e.preventDefault();
-      
+
       // Verificar reCAPTCHA - Descomentar cuando tengas dominio real
       /*
       const recaptchaResponse = (window as any).grecaptcha.getResponse();
@@ -236,127 +262,133 @@ import Toast from '../components/Toast.astro';
         return;
       }
       */
-      
+
       const formData = new FormData(form);
       const data = {
-        name: formData.get('name') as string,
-        email: formData.get('email') as string,
-        phone: formData.get('phone') as string,
-        message: formData.get('message') as string,
+        name: formData.get("name") as string,
+        email: formData.get("email") as string,
+        phone: formData.get("phone") as string,
+        message: formData.get("message") as string,
         // recaptcha: recaptchaResponse // Descomentar cuando uses reCAPTCHA
       };
-      
+
       // Validación básica
       if (!data.name || !data.email || !data.phone || !data.message) {
-        window.showError('Por favor complete todos los campos requeridos');
+        window.showError("Por favor complete todos los campos requeridos");
         return;
       }
-      
+
       // Validar email
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(data.email)) {
-        window.showError('Por favor ingrese un email válido');
+        window.showError("Por favor ingrese un email válido");
         return;
       }
-      
+
       // Validar teléfono (formato básico)
       const phoneRegex = /^[\d\s\-\+\(\)]+$/;
       if (!phoneRegex.test(data.phone)) {
-        window.showError('Por favor ingrese un teléfono válido');
+        window.showError("Por favor ingrese un teléfono válido");
         return;
       }
-      
-
-
 
       // ENVIAR DATOS A SUPABASE Y EMAILJS
       try {
-        const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+        const button = form.querySelector(
+          'button[type="submit"]'
+        ) as HTMLButtonElement;
         const originalText = button.textContent;
         button.disabled = true;
-        button.textContent = 'Enviando...';
-        
+        button.textContent = "Enviando...";
+
         // Enviar a Supabase usando función RPC segura
-        const { supabase } = await import('../lib/supabase.ts');
-        
+        const { supabase } = await import("../lib/supabase.ts");
+
         if (!supabase) {
-          throw new Error('Supabase no está configurado correctamente');
+          throw new Error("Supabase no está configurado correctamente");
         }
-        
-        const { data: result, error } = await supabase.rpc('submit_contact_form', {
-          p_nombre: data.name,
-          p_email: data.email,
-          p_telefono: data.phone,
-          p_mensaje: data.message
-        });
-        
+
+        const { data: result, error } = await supabase.rpc(
+          "submit_contact_form",
+          {
+            p_nombre: data.name,
+            p_email: data.email,
+            p_telefono: data.phone,
+            p_mensaje: data.message,
+          }
+        );
+
         if (error) {
           throw new Error(error.message);
         }
-        
+
         if (!result.success) {
           throw new Error(result.error);
         }
-        
+
         // Enviar email de notificación usando EmailJS
         try {
-          const emailjs = await import('@emailjs/browser');
-          
+          const emailjs = await import("@emailjs/browser");
+
           // Obtener credenciales desde variables de entorno
           const serviceId = import.meta.env.PUBLIC_EMAILJS_SERVICE_ID;
           const templateId = import.meta.env.PUBLIC_EMAILJS_TEMPLATE_ID;
           const publicKey = import.meta.env.PUBLIC_EMAILJS_PUBLIC_KEY;
-          
+
           // Verificar que las credenciales estén configuradas
           if (!serviceId || !templateId || !publicKey) {
-            console.warn('⚠️ EmailJS no está configurado completamente');
+            console.warn("⚠️ EmailJS no está configurado completamente");
             return;
           }
-          
+
           await emailjs.send(
             serviceId,
             templateId,
             {
-              to_email: 'infotallerbrenes@gmail.com',
+              to_email: "infotallerbrenes@gmail.com",
               from_name: data.name,
               from_email: data.email,
               phone: data.phone,
               message: data.message,
-              timestamp: new Date().toLocaleString('es-CR')
+              timestamp: new Date().toLocaleString("es-CR"),
             },
             publicKey
           );
-          
-          console.log('✅ Email enviado correctamente');
+
+          console.log("✅ Email enviado correctamente");
         } catch (emailError) {
-          console.warn('⚠️ Error enviando email (pero la consulta se guardó):', emailError);
+          console.warn(
+            "⚠️ Error enviando email (pero la consulta se guardó):",
+            emailError
+          );
           // No fallar todo el proceso si el email falla
         }
-        
-        window.showSuccess('¡Mensaje enviado correctamente! Nos pondremos en contacto pronto.');
+
+        window.showSuccess(
+          "¡Mensaje enviado correctamente! Nos pondremos en contacto pronto."
+        );
         form.reset();
-        
+
         // Reset reCAPTCHA - Descomentar cuando uses reCAPTCHA
         // (window as any).grecaptcha.reset();
-        
+
         button.disabled = false;
         button.textContent = originalText;
-        
       } catch (error) {
-        console.error('Error al enviar:', error);
-        window.showError('Error al enviar el mensaje. Por favor intente nuevamente.');
-        
-        const button = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+        console.error("Error al enviar:", error);
+        window.showError(
+          "Error al enviar el mensaje. Por favor intente nuevamente."
+        );
+
+        const button = form.querySelector(
+          'button[type="submit"]'
+        ) as HTMLButtonElement;
         button.disabled = false;
-        button.textContent = 'Enviar Mensaje';
-        
+        button.textContent = "Enviar Mensaje";
+
         // Reset reCAPTCHA en caso de error - Descomentar cuando uses reCAPTCHA
         // (window as any).grecaptcha.reset();
       }
-
-
-
-      
     });
   });
 </script>
