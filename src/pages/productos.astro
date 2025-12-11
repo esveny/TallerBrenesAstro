@@ -155,10 +155,10 @@ const categories = [...new Set(products.map((product) => product.category))];
     </section>
 
     <!-- Buscador y Filtros -->
-    <section class="py-8 bg-white shadow-sm">
+    <section class="py-8 bg-gray-50">
       <div class="container mx-auto px-4">
         <!-- Filtros por categoría -->
-        <div class="flex flex-wrap justify-center gap-3 mb-4">
+        <div class="flex flex-wrap justify-center gap-3 mb-8">
           <button
             class="filter-btn px-6 py-2 rounded-full border-2 border-primary-600 text-primary-600 font-bold hover:bg-primary-600 hover:text-white transition-all duration-300 active"
             data-filter="todos"
@@ -176,60 +176,57 @@ const categories = [...new Set(products.map((product) => product.category))];
             ))
           }
         </div>
-      </div>
-
-      <!-- Grid de Proyectos -->
-      <section class="py-20 bg-gray-50">
-        <div class="container mx-auto px-4">
-          <div
-            id="products-container"
-            class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
-          >
-            {
-              products.map((product: any) => (
-                <div
-                  data-category={product.category}
-                  data-searchable={`${product.name} ${product.description}`.toLowerCase()}
-                >
-                  <ProductCard
-                    name={product.name}
-                    description={product.description}
-                    image={product.image}
-                    category={product.category}
-                    images={product.images}
-                  />
-                </div>
-              ))
-            }
-          </div>
-
-          <div id="no-results" class="text-center py-20 hidden">
-            <div class="text-gray-500">
-              <svg
-                class="w-16 h-16 mx-auto mb-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+      
+        <!-- Grid de Proyectos -->
+        <div
+          id="products-container"
+          class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+        >
+          {
+            products.map((product: any) => (
+              <div
+                data-category={product.category}
+                data-searchable={`${product.name} ${product.description}`.toLowerCase()}
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-              </svg>
-              <h3 class="text-xl font-semibold mb-2">
+                <ProductCard
+                  name={product.name}
+                  description={product.description}
+                  image={product.image}
+                  category={product.category}
+                  images={product.images}
+                />
+              </div>
+            ))
+          }
+        </div>
+
+        <div id="no-results" class="text-center py-20 hidden">
+          <div class="text-gray-500">
+            <svg
+              class="w-16 h-16 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <h3 class="text-xl font-semibold mb-2">
                 No se encontraron proyectos
               </h3>
               <p>Intenta con otros términos de búsqueda o categorías</p>
             </div>
           </div>
         </div>
-      </section>
+    </section>
 
-      <!-- CTA -->
-      <section
-        class="py-20 bg-gradient-to-r from-dark-800 to-primary-800 text-white"
-      >
+    <!-- CTA -->
+    <section
+      class="py-20 bg-gradient-to-r from-dark-800 to-primary-800 text-white"
+    >
         <div class="container mx-auto px-4 text-center">
           <h2 class="text-4xl font-bold mb-6">¿No encuentra lo que busca?</h2>
           <p class="text-xl mb-8 opacity-90">
