@@ -61,7 +61,7 @@ const currentPath = Astro.url.pathname;
           {currentPath === '/contacto' && <span class="nav-indicator"></span>}
         </a>
         <div class="ml-4 pl-4 border-l border-white/10">
-          <BusinessStatus />
+          <BusinessStatus id="status-indicator-desktop" />
         </div>
       </div>
       
@@ -115,7 +115,7 @@ const currentPath = Astro.url.pathname;
           Contacto
         </a>
         <div class="px-4 py-3 border-t border-white/10 mt-2">
-          <BusinessStatus />
+          <BusinessStatus id="status-indicator-mobile" />
         </div>
       </div>
     </div>
@@ -178,6 +178,14 @@ const currentPath = Astro.url.pathname;
     // Toggle mobile menu
     button?.addEventListener('click', () => {
       menu?.classList.toggle('hidden');
+    });
+
+    // Cerrar menú móvil al hacer clic en un enlace
+    const mobileLinks = menu?.querySelectorAll('a');
+    mobileLinks?.forEach(link => {
+      link.addEventListener('click', () => {
+        menu?.classList.add('hidden');
+      });
     });
 
     // Efecto scroll en navbar
