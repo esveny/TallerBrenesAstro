@@ -14,11 +14,8 @@
     onclick="event.stopPropagation()"
   >
     <!-- Header del modal -->
-    <div class="flex justify-between items-center p-4 border-b border-gray-200 bg-white rounded-t-2xl">
-      <div class="flex items-center space-x-4">
-        <h2 id="enhanced-modal-title" class="text-xl md:text-2xl font-bold text-dark-800">Proyecto</h2>
-        <span id="enhanced-modal-counter" class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">1 / 1</span>
-      </div>
+    <div class="flex justify-between items-center p-4 md:p-6 border-b border-gray-200 bg-white rounded-t-2xl">
+      <h2 id="enhanced-modal-title" class="text-xl md:text-2xl font-bold text-dark-800 pr-4">Proyecto</h2>
       
       <div class="flex items-center space-x-2">
         <!-- Controles de zoom -->
@@ -103,8 +100,13 @@
         />
       </div>
       
+      <!-- Contador de imágenes con diseño mejorado -->
+      <div id="enhanced-modal-counter" class="absolute bottom-6 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+        <span class="tabular-nums">1 / 1</span>
+      </div>
+      
       <!-- Indicador de zoom en móvil -->
-      <div class="md:hidden absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 rounded-full text-sm">
+      <div class="md:hidden absolute top-4 right-4 bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-xs font-medium">
         Pellizca para hacer zoom
       </div>
     </div>
@@ -114,17 +116,22 @@
       <!-- Toggle para móvil -->
       <button 
         id="toggle-info-btn"
-        class="md:hidden w-full p-3 flex items-center justify-between text-left hover:bg-gray-50"
+        class="md:hidden w-full p-4 flex items-center justify-between text-left bg-gradient-to-r from-primary-50 to-accent-50 hover:from-primary-100 hover:to-accent-100 transition-all duration-200 shadow-sm"
       >
-        <span class="font-medium text-gray-800">Información del proyecto</span>
-        <svg id="toggle-icon" class="w-5 h-5 text-gray-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span class="font-semibold text-gray-800">Información del proyecto</span>
+        </div>
+        <svg id="toggle-icon" class="w-5 h-5 text-primary-600 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
         </svg>
       </button>
       
       <!-- Contenido del panel -->
-      <div id="info-content" class="p-4 md:block">
-        <div class="grid md:grid-cols-2 gap-6">
+      <div id="info-content" class="p-4 md:p-6 md:block">
+        <div class="grid md:grid-cols-2 gap-6 md:gap-8">
           <!-- Información principal -->
           <div>
             <h3 class="text-lg font-semibold text-gray-700 mb-2">Descripción</h3>
@@ -315,7 +322,16 @@
       if (title) title.textContent = this.currentProduct.name;
       if (description) description.textContent = this.currentProduct.description;
       if (category) category.textContent = this.currentProduct.category;
-      if (counter) counter.textContent = `${this.currentImageIndex + 1} / ${this.currentImages.length}`;
+      
+      // Actualizar contador y controlar su visibilidad
+      if (counter) {
+        const counterSpan = counter.querySelector('span');
+        if (counterSpan) {
+          counterSpan.textContent = `${this.currentImageIndex + 1} / ${this.currentImages.length}`;
+        }
+        // Ocultar contador si solo hay una imagen
+        counter.style.display = this.currentImages.length > 1 ? 'block' : 'none';
+      }
       
       this.updateImage();
     }
@@ -340,6 +356,9 @@
       }, 10);
       
       document.body.style.overflow = 'hidden';
+      
+      // Ocultar WhatsApp button en móvil cuando el modal está abierto
+      this.toggleWhatsAppButton(false);
     }
 
     public close(event?: Event) {
@@ -354,6 +373,9 @@
         this.modal?.classList.add('hidden');
         this.modal?.classList.remove('flex');
         document.body.style.overflow = '';
+        
+        // Mostrar WhatsApp button nuevamente al cerrar el modal
+        this.toggleWhatsAppButton(true);
       }, 300);
     }
 
@@ -569,6 +591,27 @@
         case '0':
           this.resetZoom();
           break;
+      }
+    }
+    
+    // Función para controlar la visibilidad del botón de WhatsApp en móvil
+    private toggleWhatsAppButton(show: boolean) {
+      const whatsappBtn = document.getElementById('whatsapp-button');
+      if (!whatsappBtn) return;
+      
+      // Solo ocultar en dispositivos móviles (ancho < 768px)
+      const isMobile = window.innerWidth < 768;
+      
+      if (isMobile) {
+        if (show) {
+          whatsappBtn.style.display = 'flex';
+          whatsappBtn.style.opacity = '1';
+        } else {
+          whatsappBtn.style.opacity = '0';
+          setTimeout(() => {
+            whatsappBtn.style.display = 'none';
+          }, 300);
+        }
       }
     }
   }
