@@ -1,6 +1,14 @@
 {
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/mantenimiento" }
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/mantenimiento",
+      "permanent": false
+    },
+    {
+      "source": "/:path((?!mantenimiento).*)",
+      "destination": "/mantenimiento",
+      "permanent": false
+    }
   ]
 }
