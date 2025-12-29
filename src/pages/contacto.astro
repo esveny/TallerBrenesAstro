@@ -13,8 +13,8 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
 >
   <Navbar />
 
-  <!-- reCAPTCHA v2 Script -->
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <!-- reCAPTCHA v3 Script -->
+  <script src={`https://www.google.com/recaptcha/api.js?render=${import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY}`} async defer></script>
 
   <main>
     <!-- Hero Section -->
@@ -173,16 +173,6 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
                   placeholder="Cuéntenos sobre su proyecto..."></textarea>
               </div>
 
-              <!-- reCAPTCHA v2 -->
-              <div class="mb-6 flex justify-center">
-                <div 
-                  class="g-recaptcha" 
-                  data-sitekey={import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY}
-                  data-callback="enableSubmitButton"
-                  data-expired-callback="disableSubmitButton"
-                ></div>
-              </div>
-
               <button
                 type="submit"
                 id="submit-button"
@@ -229,42 +219,20 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
 </Layout>
 
 <script>
-  // Funciones globales para reCAPTCHA
-  (window as any).enableSubmitButton = function() {
-    const submitButton = document.getElementById('submit-button') as HTMLButtonElement;
-    if (submitButton) {
-      submitButton.disabled = false;
-    }
-  };
-  
-  (window as any).disableSubmitButton = function() {
-    const submitButton = document.getElementById('submit-button') as HTMLButtonElement;
-    if (submitButton) {
-      submitButton.disabled = true;
-    }
-  };
-
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("contact-form") as HTMLFormElement;
-    const submitButton = document.getElementById('submit-button') as HTMLButtonElement;
-    
-    // Deshabilitar botón hasta que se complete reCAPTCHA
-    if (submitButton) {
-      submitButton.disabled = true;
-    }
 
     form?.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      // Verificar reCAPTCHA
-      const recaptchaResponse = (window as any).grecaptcha.getResponse();
-      if (!recaptchaResponse) {
-        window.showError('Por favor complete la verificación reCAPTCHA');
-        return;
-      }
-
-      // Validar reCAPTCHA en el servidor
+      // Ejecutar reCAPTCHA v3
       try {
+        const recaptchaResponse = await (window as any).grecaptcha.execute(
+          import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY,
+          { action: 'submit_contact_form' }
+        );
+
+        // Validar reCAPTCHA en el servidor
         const recaptchaVerification = await fetch('/api/verify-recaptcha', {
           method: 'POST',
           headers: {
@@ -277,13 +245,11 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
 
         if (!recaptchaResult.success) {
           window.showError('Verificación de seguridad fallida. Por favor intente nuevamente.');
-          (window as any).grecaptcha.reset();
           return;
         }
       } catch (error) {
-        console.error('Error verificando reCAPTCHA:', error);
+        console.error('Error ejecutando reCAPTCHA:', error);
         window.showError('Error en la verificación de seguridad. Por favor intente nuevamente.');
-        (window as any).grecaptcha.reset();
         return;
       }
 
@@ -393,10 +359,6 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
         );
         form.reset();
 
-        // Reset reCAPTCHA
-        (window as any).grecaptcha.reset();
-        button.disabled = true; // Deshabilitar hasta nuevo reCAPTCHA
-
         button.disabled = false;
         button.textContent = originalText;
       } catch (error) {
@@ -408,11 +370,8 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
         const button = form.querySelector(
           'button[type="submit"]'
         ) as HTMLButtonElement;
-        button.disabled = true; // Mantener deshabilitado hasta nuevo reCAPTCHA
+        button.disabled = false;
         button.textContent = "Enviar Mensaje";
-
-        // Reset reCAPTCHA en caso de error
-        (window as any).grecaptcha.reset();
       }
     });
   });

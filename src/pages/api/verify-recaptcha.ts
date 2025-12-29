@@ -31,10 +31,31 @@ export const POST: APIRoute = async ({ request }) => {
     const verificationData = await verificationResponse.json();
 
     if (verificationData.success) {
-      return new Response(
-        JSON.stringify({ success: true, message: 'reCAPTCHA verificado correctamente' }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
-      );
+      // reCAPTCHA v3 retorna un score (0.0 - 1.0)
+      // 0.0 = muy probablemente un bot
+      // 1.0 = muy probablemente humano
+      const score = verificationData.score || 0;
+      
+      // Establecer umbral mínimo de 0.5 (ajustable según tus necesidades)
+      if (score >= 0.5) {
+        return new Response(
+          JSON.stringify({ 
+            success: true, 
+            message: 'reCAPTCHA verificado correctamente',
+            score: score 
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } }
+        );
+      } else {
+        return new Response(
+          JSON.stringify({ 
+            success: false, 
+            error: 'Puntuación de reCAPTCHA demasiado baja',
+            score: score 
+          }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
     } else {
       return new Response(
         JSON.stringify({ 
