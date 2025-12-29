@@ -13,8 +13,8 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
 >
   <Navbar />
 
-  <!-- reCAPTCHA v2 Script - Descomentar cuando tengas dominio real -->
-  <!-- <script src="https://www.google.com/recaptcha/api.js" async defer></script> -->
+  <!-- reCAPTCHA v2 Script -->
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
   <main>
     <!-- Hero Section -->
@@ -173,17 +173,15 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
                   placeholder="Cuéntenos sobre su proyecto..."></textarea>
               </div>
 
-              <!-- reCAPTCHA v2 - Descomentar cuando tengas dominio real -->
-              <!-- 
+              <!-- reCAPTCHA v2 -->
               <div class="mb-6 flex justify-center">
                 <div 
                   class="g-recaptcha" 
-                  data-sitekey="TU_SITE_KEY_AQUI"
+                  data-sitekey={import.meta.env.PUBLIC_RECAPTCHA_SITE_KEY}
                   data-callback="enableSubmitButton"
                   data-expired-callback="disableSubmitButton"
                 ></div>
               </div>
-              -->
 
               <button
                 type="submit"
@@ -231,8 +229,7 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
 </Layout>
 
 <script>
-  // Funciones globales para reCAPTCHA - Descomentar cuando tengas dominio real
-  /*
+  // Funciones globales para reCAPTCHA
   (window as any).enableSubmitButton = function() {
     const submitButton = document.getElementById('submit-button') as HTMLButtonElement;
     if (submitButton) {
@@ -246,22 +243,49 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
       submitButton.disabled = true;
     }
   };
-  */
 
   document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("contact-form") as HTMLFormElement;
+    const submitButton = document.getElementById('submit-button') as HTMLButtonElement;
+    
+    // Deshabilitar botón hasta que se complete reCAPTCHA
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
 
     form?.addEventListener("submit", async (e) => {
       e.preventDefault();
 
-      // Verificar reCAPTCHA - Descomentar cuando tengas dominio real
-      /*
+      // Verificar reCAPTCHA
       const recaptchaResponse = (window as any).grecaptcha.getResponse();
       if (!recaptchaResponse) {
         window.showError('Por favor complete la verificación reCAPTCHA');
         return;
       }
-      */
+
+      // Validar reCAPTCHA en el servidor
+      try {
+        const recaptchaVerification = await fetch('/api/verify-recaptcha', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token: recaptchaResponse }),
+        });
+
+        const recaptchaResult = await recaptchaVerification.json();
+
+        if (!recaptchaResult.success) {
+          window.showError('Verificación de seguridad fallida. Por favor intente nuevamente.');
+          (window as any).grecaptcha.reset();
+          return;
+        }
+      } catch (error) {
+        console.error('Error verificando reCAPTCHA:', error);
+        window.showError('Error en la verificación de seguridad. Por favor intente nuevamente.');
+        (window as any).grecaptcha.reset();
+        return;
+      }
 
       const formData = new FormData(form);
       const data = {
@@ -269,7 +293,7 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
         email: formData.get("email") as string,
         phone: formData.get("phone") as string,
         message: formData.get("message") as string,
-        // recaptcha: recaptchaResponse // Descomentar cuando uses reCAPTCHA
+        recaptcha: recaptchaResponse
       };
 
       // Validación básica
@@ -369,8 +393,9 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
         );
         form.reset();
 
-        // Reset reCAPTCHA - Descomentar cuando uses reCAPTCHA
-        // (window as any).grecaptcha.reset();
+        // Reset reCAPTCHA
+        (window as any).grecaptcha.reset();
+        button.disabled = true; // Deshabilitar hasta nuevo reCAPTCHA
 
         button.disabled = false;
         button.textContent = originalText;
@@ -383,11 +408,11 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
         const button = form.querySelector(
           'button[type="submit"]'
         ) as HTMLButtonElement;
-        button.disabled = false;
+        button.disabled = true; // Mantener deshabilitado hasta nuevo reCAPTCHA
         button.textContent = "Enviar Mensaje";
 
-        // Reset reCAPTCHA en caso de error - Descomentar cuando uses reCAPTCHA
-        // (window as any).grecaptcha.reset();
+        // Reset reCAPTCHA en caso de error
+        (window as any).grecaptcha.reset();
       }
     });
   });
