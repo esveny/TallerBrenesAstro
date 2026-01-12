@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel/serverless';
 
 export default defineConfig({
-  output: 'server',
+  output: 'hybrid',
   adapter: vercel(),
   site: 'https://www.tallerindustrialbrenes.com',
   integrations: [
