@@ -7,8 +7,8 @@ export interface Props {
 
 const { title, description = "Taller Industrial Brenes - Soluciones en portones, estructuras metálicas y soldadura especializada en Costa Rica", ogImage = "/LogoTallerBrenes.png" } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const siteUrl = "https://www.tallerindustrialbrenes.com";
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || siteUrl);
 const fullOgImage = new URL(ogImage, siteUrl).toString();
 ---
 
