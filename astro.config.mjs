@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel/static';
 
 export default defineConfig({
-  output: 'static',
+  output: 'server',
   adapter: vercel(),
   site: 'https://www.tallerindustrialbrenes.com',
   integrations: [
