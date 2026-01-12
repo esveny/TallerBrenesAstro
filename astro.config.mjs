@@ -6,7 +6,7 @@ import vercel from '@astrojs/vercel/serverless';
 export default defineConfig({
   output: 'server',
   adapter: vercel(),
-  site: 'https://tallerindustrialbrenes.com',
+  site: 'https://www.tallerindustrialbrenes.com',
   integrations: [
     tailwind({
       config: { applyBaseStyles: false }
