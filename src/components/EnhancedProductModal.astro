@@ -133,7 +133,7 @@
       </button>
       
       <!-- Contenido del panel -->
-      <div id="info-content" class="p-4 md:p-6 hidden md:block" role="region" aria-labelledby="toggle-info-btn">
+      <div id="info-content" class="p-4 md:p-6 hidden md:block overflow-y-auto max-h-[40vh] md:max-h-none" role="region" aria-labelledby="toggle-info-btn">
         <div class="grid md:grid-cols-2 gap-6 md:gap-8">
           <!-- Información principal -->
           <div>
@@ -727,6 +727,25 @@
   
   #toggle-info-btn:active {
     transform: scale(0.98);
+  }
+  
+  /* Scrollbar personalizada para el panel de información en móvil */
+  #info-content::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  #info-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+  
+  #info-content::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+  
+  #info-content::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
   }
   
   /* Scrollbar personalizada para thumbnails */
