@@ -48,6 +48,30 @@ const fullOgImage = new URL(ogImage, siteUrl).toString();
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={fullOgImage} />
     
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Taller Industrial Brenes",
+        "alternateName": "Taller Industrial Brenes y Asociados de Grecia S.A",
+        "url": "https://www.tallerindustrialbrenes.com",
+        "logo": "https://www.tallerindustrialbrenes.com/LogoTallerBrenes.png",
+        "description": "Taller industrial especializado en portones automáticos, estructuras metálicas y soldadura especializada en Costa Rica",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+506 8931-8268",
+          "contactType": "customer service",
+          "areaServed": "CR",
+          "availableLanguage": "es"
+        },
+        "sameAs": [
+          "https://www.facebook.com/tallerindustrialbrenes",
+          "https://www.instagram.com/tallerindustrialbrenes/"
+        ]
+      }
+    </script>
+
     <!-- Local Business Schema -->
     <script type="application/ld+json">
       {
