@@ -359,8 +359,29 @@ const slides = [
       min-height: 100dvh;
     }
 
+    .hero-slide__img {
+      /* Overriding default to make the image crop similarly to desktop instead of fitting inside */
+      width: 170%;
+      height: 170%;
+      object-fit: cover;
+      object-position: center center;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* Ajustar la posición y escala de la segunda imagen (índice 1) para que no se vea cortada abajo */
+    .hero-slide[data-index="1"] .hero-slide__img {
+      width: 120vw;
+      height: 218vh;
+      object-position: center 70%;
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    .hero-slide__content {
+      padding: 3rem 1rem 2rem;
+    }
+
     .hero-slide__logo {
-      height: 9rem;
+      height: 6rem;
     }
 
     .hero-slide__logo-wrap {
@@ -368,17 +389,18 @@ const slides = [
     }
 
     .hero-slide__title {
-      font-size: clamp(1.6rem, 7vw, 2.4rem);
+      font-size: clamp(1.4rem, 6vw, 2rem);
     }
 
     .hero-slide__subtitle {
-      font-size: clamp(0.9rem, 3.5vw, 1.1rem);
-      padding: 0 0.5rem;
+      font-size: clamp(0.9rem, 4vw, 1.05rem);
+      padding: 0 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .hero-slide__btn {
-      font-size: 1rem;
-      padding: 0.8rem 1.8rem;
+      font-size: 0.95rem;
+      padding: 0.8rem 1.6rem;
     }
 
     .hero-arrow {
@@ -386,29 +408,37 @@ const slides = [
     }
 
     .hero-bullets {
-      bottom: 1.5rem;
+      bottom: 3rem; /* Moved up to avoid overlapping with mobile browser UI or floating buttons */
     }
 
     .hero-bullet {
-      width: 28px;
+      width: 24px;
       height: 4px;
     }
 
-    /* Tone down Ken Burns on mobile for perf */
+    /* Fix image jump by including translate */
     @keyframes kenBurns {
-      0%   { transform: scale(0.93); }
-      100% { transform: scale(0.95); }
+      0%   { transform: translate(-50%, -50%) scale(1); }
+      100% { transform: translate(-50%, -50%) scale(1.05); }
     }
   }
 
   /* Very small screens */
   @media (max-width: 380px) {
     .hero-slide__logo {
-      height: 7rem;
+      height: 4.5rem;
     }
 
     .hero-slide__content {
       padding: 1.5rem 1rem;
+    }
+
+    .hero-slide__title {
+      font-size: 1.3rem;
+    }
+
+    .hero-slide__subtitle {
+      font-size: 0.85rem;
     }
   }
 </style>
