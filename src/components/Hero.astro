@@ -1,66 +1,515 @@
 ---
+const slides = [
+  {
+    image: "https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/Sliders/Slider1.webp",
+    title: "Materializamos sus Proyectos",
+    subtitle: "Puertas, portones y estructuras metálicas de calidad",
+  },
+  {
+    image: "https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/Sliders/Slider2.webp",
+    title: "Calidad Garantizada",
+    subtitle: "Más de 20 años fabricando con materiales de primera",
+  },
+  {
+    image: "https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/Sliders/Slider3.webp",
+    title: "Diseño a su Medida",
+    subtitle: "Cada proyecto es único, adaptado a sus necesidades",
+  },
+];
 ---
 
-<section class="hero relative bg-cover bg-center bg-fixed min-h-screen flex items-center justify-center text-white overflow-hidden">
-  <!-- Content -->
-  <div class="relative z-10 text-center px-4 max-w-4xl mx-auto" style="z-index: 10;">
-    <!-- Logo -->
-    <div class="mb-8 scroll-animate scale-in flex justify-center">
-      <img 
-        src="https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/LogoTBrenesLetrasBlancas.png" 
-        alt="Taller Industrial Brenes Logo" 
-        class="h-48 md:h-64 lg:h-72 w-auto mb-6 animate-fade-up"
+<section id="hero-slider" class="hero-slider">
+  <!-- Slides -->
+  {slides.map((slide, i) => (
+    <div class={`hero-slide ${i === 0 ? "active" : ""}`} data-index={i}>
+      <img
+        src={slide.image}
+        alt={slide.title}
+        class="hero-slide__img"
+        loading={i === 0 ? "eager" : "lazy"}
+        fetchpriority={i === 0 ? "high" : "auto"}
       />
-    </div>
-    
-    <!-- Main title -->
-    <h1 class="text-4xl md:text-6xl font-bold mb-6 scroll-animate fade-up">
-      Materializamos sus proyectos
-    </h1>
-    
-    <!-- Subtitle -->
-    <p class="text-xl md:text-2xl mb-8 opacity-90 scroll-animate fade-up">
-      Soluciones en puertas, portones, estructuras metálicas y mucho más
-    </p>
-    
-    <!-- CTA Button -->
-    <div class="scroll-animate fade-up">
-      <a href="/productos" class="inline-flex items-center gap-3 bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-bold text-xl px-12 py-4 rounded-full shadow-2xl hover:shadow-primary-500/25 transform hover:scale-105 transition-all duration-300 border border-primary-400/20 backdrop-blur-sm">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-        </svg>
-        Ver Galería
-        <svg class="w-5 h-5 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-        </svg>
-      </a>
-    </div>
-  </div>
+      <div class="hero-slide__overlay"></div>
 
-  <!-- Background image with better overlay -->
-  <style>
-    .hero {
-      background-image: url('/images/fondo.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-    }
-    
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 1;
-    }
-    
-    @media (max-width: 768px) {
-      .hero {
-        background-attachment: scroll;
-      }
-    }
-  </style>
+      <!-- Layered content -->
+      <div class="hero-slide__content">
+        <!-- Logo -->
+        <div class="hero-slide__logo-wrap">
+          <img
+            src="https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/LogoTBrenesLetrasBlancas.png"
+            alt="Taller Industrial Brenes Logo"
+            class="hero-slide__logo"
+            loading="eager"
+          />
+        </div>
+
+        <h1 class="hero-slide__title">{slide.title}</h1>
+        <p class="hero-slide__subtitle">{slide.subtitle}</p>
+
+        <div class="hero-slide__cta">
+          <a href="/productos" class="hero-slide__btn">
+            <svg class="hero-slide__btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            Ver Galería
+            <svg class="hero-slide__btn-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  ))}
+
+  <!-- Arrow Navigation -->
+  <button class="hero-arrow hero-arrow--prev" aria-label="Slide anterior">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+    </svg>
+  </button>
+  <button class="hero-arrow hero-arrow--next" aria-label="Siguiente slide">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+    </svg>
+  </button>
+
+  <!-- Bullet Navigation -->
+  <div class="hero-bullets">
+    {slides.map((_, i) => (
+      <button
+        class={`hero-bullet ${i === 0 ? "active" : ""}`}
+        data-slide={i}
+        aria-label={`Ir al slide ${i + 1}`}
+      >
+        <span class="hero-bullet__fill"></span>
+      </button>
+    ))}
+  </div>
 </section>
+
+<style>
+  /* ── Container ───────────────────────────────── */
+  .hero-slider {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    min-height: 550px;
+    overflow: hidden;
+    background: #0f0f0f;
+  }
+
+  /* ── Single Slide ────────────────────────────── */
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 1s ease, visibility 0s 1s;
+    z-index: 1;
+  }
+
+  .hero-slide.active {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 1s ease, visibility 0s 0s;
+    z-index: 2;
+  }
+
+  /* ── Background image ────────────────────────── */
+  .hero-slide__img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 110%;
+    height: 110%;
+    object-fit: cover;
+    object-position: center;
+    will-change: transform;
+    transform: translate(-50%, -50%) scale(0.92);
+  }
+
+  .hero-slide.active .hero-slide__img {
+    animation: kenBurns 7s ease-out forwards;
+  }
+
+  @keyframes kenBurns {
+    0%   { transform: translate(-50%, -50%) scale(0.92); }
+    100% { transform: translate(-50%, -50%) scale(0.95); }
+  }
+
+  /* ── Dark overlay ────────────────────────────── */
+  .hero-slide__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.35) 0%,
+      rgba(0, 0, 0, 0.50) 60%,
+      rgba(0, 0, 0, 0.65) 100%
+    );
+    z-index: 1;
+  }
+
+  /* ── Content layer ───────────────────────────── */
+  .hero-slide__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    color: #fff;
+  }
+
+  /* ── Logo ─────────────────────────────────────── */
+  .hero-slide__logo-wrap {
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: scale(0.85);
+  }
+
+  .hero-slide.active .hero-slide__logo-wrap {
+    animation: revealScale 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+  }
+
+  .hero-slide__logo {
+    height: 14rem;
+    width: auto;
+  }
+
+  /* ── Title ───────────────────────────────────── */
+  .hero-slide__title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  .hero-slide.active .hero-slide__title {
+    animation: revealUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
+  }
+
+  /* ── Subtitle ────────────────────────────────── */
+  .hero-slide__subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.35rem);
+    max-width: 620px;
+    margin-bottom: 2rem;
+    opacity: 0;
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4);
+    transform: translateY(30px);
+  }
+
+  .hero-slide.active .hero-slide__subtitle {
+    animation: revealUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.8s forwards;
+  }
+
+  /* ── CTA wrapper ─────────────────────────────── */
+  .hero-slide__cta {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .hero-slide.active .hero-slide__cta {
+    animation: revealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.1s forwards;
+  }
+
+  /* ── CTA Button ──────────────────────────────── */
+  .hero-slide__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: linear-gradient(135deg, #475569, #334155);
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 1.15rem;
+    padding: 0.9rem 2.5rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+  }
+
+  .hero-slide__btn:hover {
+    transform: scale(1.06);
+    background: linear-gradient(135deg, #334155, #1e293b);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+  }
+
+  .hero-slide__btn-icon {
+    width: 1.35rem;
+    height: 1.35rem;
+  }
+
+  .hero-slide__btn-arrow {
+    width: 1.15rem;
+    height: 1.15rem;
+    transition: transform 0.3s;
+  }
+
+  .hero-slide__btn:hover .hero-slide__btn-arrow {
+    transform: translateX(4px);
+  }
+
+  /* ── Reveal keyframes ────────────────────────── */
+  @keyframes revealUp {
+    0%   { opacity: 0; transform: translateY(40px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes revealScale {
+    0%   { opacity: 0; transform: scale(0.85); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+
+  /* ── Arrow buttons ───────────────────────────── */
+  .hero-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #fff;
+    transition: background 0.3s, transform 0.3s;
+    padding: 0;
+  }
+
+  .hero-arrow svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .hero-arrow:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .hero-arrow--prev { left: 1.25rem; }
+  .hero-arrow--next { right: 1.25rem; }
+
+  /* ── Bullet navigation ──────────────────────── */
+  .hero-bullets {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .hero-bullet {
+    position: relative;
+    width: 38px;
+    height: 5px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    cursor: pointer;
+    overflow: hidden;
+    padding: 0;
+    transition: background 0.3s;
+  }
+
+  .hero-bullet:hover {
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  .hero-bullet__fill {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    border-radius: inherit;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .hero-bullet.active .hero-bullet__fill {
+    animation: bulletProgress 6s linear forwards;
+  }
+
+  @keyframes bulletProgress {
+    0%   { transform: scaleX(0); }
+    100% { transform: scaleX(1); }
+  }
+
+  /* ── Mobile adjustments ──────────────────────── */
+  @media (max-width: 768px) {
+    .hero-slider {
+      min-height: 100vh;
+      min-height: 100dvh;
+    }
+
+    .hero-slide__logo {
+      height: 9rem;
+    }
+
+    .hero-slide__logo-wrap {
+      margin-bottom: 1rem;
+    }
+
+    .hero-slide__title {
+      font-size: clamp(1.6rem, 7vw, 2.4rem);
+    }
+
+    .hero-slide__subtitle {
+      font-size: clamp(0.9rem, 3.5vw, 1.1rem);
+      padding: 0 0.5rem;
+    }
+
+    .hero-slide__btn {
+      font-size: 1rem;
+      padding: 0.8rem 1.8rem;
+    }
+
+    .hero-arrow {
+      display: none;
+    }
+
+    .hero-bullets {
+      bottom: 1.5rem;
+    }
+
+    .hero-bullet {
+      width: 28px;
+      height: 4px;
+    }
+
+    /* Tone down Ken Burns on mobile for perf */
+    @keyframes kenBurns {
+      0%   { transform: scale(0.93); }
+      100% { transform: scale(0.95); }
+    }
+  }
+
+  /* Very small screens */
+  @media (max-width: 380px) {
+    .hero-slide__logo {
+      height: 7rem;
+    }
+
+    .hero-slide__content {
+      padding: 1.5rem 1rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const slider = document.getElementById('hero-slider');
+    if (!slider) return;
+
+    const slides = slider.querySelectorAll<HTMLDivElement>('.hero-slide');
+    const bullets = slider.querySelectorAll<HTMLButtonElement>('.hero-bullet');
+    const prevBtn = slider.querySelector<HTMLButtonElement>('.hero-arrow--prev');
+    const nextBtn = slider.querySelector<HTMLButtonElement>('.hero-arrow--next');
+
+    const TOTAL = slides.length;
+    const INTERVAL = 6000; // ms
+
+    let current = 0;
+    let autoplayTimer: ReturnType<typeof setInterval> | null = null;
+    let isPaused = false;
+
+    /* ── Core transition ────────────────────────── */
+    function goTo(index: number) {
+      if (index === current) return;
+
+      // Remove active from current
+      slides[current].classList.remove('active');
+      bullets[current].classList.remove('active');
+
+      // Force reflow so animations restart cleanly on the new slide
+      current = (index + TOTAL) % TOTAL;
+      const nextSlide = slides[current];
+      // Reset animations by toggling class off-on
+      void nextSlide.offsetWidth; // trigger reflow
+
+      nextSlide.classList.add('active');
+      bullets[current].classList.add('active');
+
+      restartAutoplay();
+    }
+
+    function next() { goTo(current + 1); }
+    function prev() { goTo(current - 1); }
+
+    /* ── Autoplay ───────────────────────────────── */
+    function startAutoplay() {
+      stopAutoplay();
+      autoplayTimer = setInterval(() => {
+        if (!isPaused) next();
+      }, INTERVAL);
+    }
+
+    function stopAutoplay() {
+      if (autoplayTimer) { clearInterval(autoplayTimer); autoplayTimer = null; }
+    }
+
+    function restartAutoplay() {
+      startAutoplay();
+    }
+
+    /* ── Event listeners ────────────────────────── */
+    prevBtn?.addEventListener('click', prev);
+    nextBtn?.addEventListener('click', next);
+
+    bullets.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const idx = parseInt(btn.dataset.slide ?? '0', 10);
+        goTo(idx);
+      });
+    });
+
+    // Pause on hover (desktop)
+    slider.addEventListener('mouseenter', () => { isPaused = true; });
+    slider.addEventListener('mouseleave', () => { isPaused = false; });
+
+    /* ── Touch / Swipe ──────────────────────────── */
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    slider.addEventListener('touchstart', (e: TouchEvent) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    slider.addEventListener('touchend', (e: TouchEvent) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        diff > 0 ? next() : prev();
+      }
+    }, { passive: true });
+
+    /* ── Visibility API — pause if tab hidden ───── */
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopAutoplay();
+      } else {
+        startAutoplay();
+      }
+    });
+
+    /* ── Boot ────────────────────────────────────── */
+    startAutoplay();
+  });
+</script>
