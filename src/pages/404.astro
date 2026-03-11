@@ -18,7 +18,9 @@ import Footer from '../components/Footer.astro';
         
         <!-- Error Code -->
         <div class="mb-8">
-          <h1 class="text-6xl md:text-8xl font-bold text-primary-600 mb-4 animate-pulse">404</h1>
+          <div class="flex justify-center mb-4">
+            <canvas id="fuzzy404" style="max-width:100%;display:block;"></canvas>
+          </div>
           <div class="w-20 h-1 bg-gradient-to-r from-primary-600 to-accent-500 mx-auto mb-6"></div>
         </div>
         
@@ -151,3 +153,77 @@ import Footer from '../components/Footer.astro';
     transform: scale(1.1);
   }
 </style>
+
+<script>
+  const canvas = document.getElementById('fuzzy404') as HTMLCanvasElement | null;
+  if (canvas) {
+    const ctx = canvas.getContext('2d')!;
+    const TEXT        = '404';
+    const FONT_WEIGHT = 900;
+    const COLOR       = '#070f29'; // primary-800 blue
+    const BASE        = 0.18;
+    const HOVER       = 0.5;
+    const FUZZ        = 30;
+    const FPS         = 60;
+
+    // responsive font size: 20vw clamped between 120px and 200px
+    const numericFontSize = Math.min(200, Math.max(120, window.innerWidth * 0.20));
+    const fontStr = `${FONT_WEIGHT} ${numericFontSize}px sans-serif`;
+
+    // offscreen canvas – draw text once
+    const off = document.createElement('canvas');
+    const offCtx = off.getContext('2d')!;
+    offCtx.font = fontStr;
+    offCtx.textBaseline = 'alphabetic';
+    const metrics     = offCtx.measureText(TEXT);
+    const ascent      = metrics.actualBoundingBoxAscent  ?? numericFontSize;
+    const descent     = metrics.actualBoundingBoxDescent ?? numericFontSize * 0.2;
+    const textW       = Math.ceil(metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight);
+    const textH       = Math.ceil(ascent + descent);
+    const xBuf        = 10;
+
+    off.width  = textW + xBuf;
+    off.height = textH;
+    offCtx.font          = fontStr;
+    offCtx.textBaseline  = 'alphabetic';
+    offCtx.fillStyle     = COLOR;
+    offCtx.fillText(TEXT, xBuf / 2 - metrics.actualBoundingBoxLeft, ascent);
+
+    // main canvas sizing
+    const hMargin = FUZZ + 20;
+    canvas.width  = off.width  + hMargin * 2;
+    canvas.height = off.height;
+    ctx.translate(hMargin, 0);
+
+    let isHovering = false;
+    let last = 0;
+    const frame = 1000 / FPS;
+
+    const run = (ts: number) => {
+      if (ts - last < frame) { requestAnimationFrame(run); return; }
+      last = ts;
+
+      ctx.clearRect(-hMargin - 5, -5, canvas.width + 10, textH + 10);
+      const intensity = isHovering ? HOVER : BASE;
+
+      for (let row = 0; row < textH; row++) {
+        const dx = Math.floor(intensity * (Math.random() - 0.5) * FUZZ);
+        ctx.drawImage(off, 0, row, off.width, 1, dx, row, off.width, 1);
+      }
+      requestAnimationFrame(run);
+    };
+    requestAnimationFrame(run);
+
+    // hover detection
+    const hitLeft   = hMargin + xBuf / 2 - metrics.actualBoundingBoxLeft;
+    const hitRight  = hitLeft + textW;
+
+    canvas.addEventListener('mousemove', (e: MouseEvent) => {
+      const r = canvas.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      isHovering = x >= hitLeft && x <= hitRight + hMargin && y >= 0 && y <= textH;
+    });
+    canvas.addEventListener('mouseleave', () => { isHovering = false; });
+  }
+</script>

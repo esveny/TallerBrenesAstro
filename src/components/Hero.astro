@@ -1,4 +1,6 @@
 ---
+import StarBorder from './StarBorder.astro';
+
 const slides = [
   {
     image: "https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/Sliders/Slider1.webp",
@@ -43,7 +45,16 @@ const slides = [
           />
         </div>
 
-        <h1 class="hero-slide__title">{slide.title}</h1>
+        {i === 0 ? (
+          <h1 class="hero-slide__title">
+            Materializamos sus{" "}
+            <span class="rotating-word-wrap">
+              <span id="rotating-word">Proyectos</span>
+            </span>
+          </h1>
+        ) : (
+          <h1 class="hero-slide__title">{slide.title}</h1>
+        )}
         <p class="hero-slide__subtitle">{slide.subtitle}</p>
 
         <div class="hero-slide__cta">
@@ -214,11 +225,11 @@ const slides = [
   /* ── CTA wrapper ─────────────────────────────── */
   .hero-slide__cta {
     opacity: 0;
-    transform: translateY(20px);
+    filter: blur(10px);
   }
 
   .hero-slide.active .hero-slide__cta {
-    animation: revealUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 1.1s forwards;
+    animation: fadeBlur 1s ease-out 1.1s forwards;
   }
 
   /* ── CTA Button ──────────────────────────────── */
@@ -226,7 +237,9 @@ const slides = [
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    background: linear-gradient(135deg, #475569, #334155);
+    background: rgba(51, 65, 85, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     color: #fff;
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
@@ -235,13 +248,13 @@ const slides = [
     border-radius: 9999px;
     text-decoration: none;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
-    border: 1px solid rgba(148, 163, 184, 0.2);
+    border: 1px solid rgba(148, 163, 184, 0.35);
     transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
   }
 
   .hero-slide__btn:hover {
     transform: scale(1.06);
-    background: linear-gradient(135deg, #334155, #1e293b);
+    background: rgba(30, 41, 59, 0.7);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
   }
 
@@ -260,10 +273,27 @@ const slides = [
     transform: translateX(4px);
   }
 
+  /* ── Rotating word ──────────────────────────── */
+  .rotating-word-wrap {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: bottom;
+    line-height: 1.15;
+  }
+
+  #rotating-word {
+    display: inline-block;
+  }
+
   /* ── Reveal keyframes ────────────────────────── */
   @keyframes revealUp {
     0%   { opacity: 0; transform: translateY(40px); }
     100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeBlur {
+    0%   { opacity: 0; filter: blur(10px); }
+    100% { opacity: 1; filter: blur(0px); }
   }
 
   @keyframes revealScale {
@@ -541,5 +571,23 @@ const slides = [
 
     /* ── Boot ────────────────────────────────────── */
     startAutoplay();
-  });
+    /* ── Rotating word ─────────────────────────── */
+    const rotatingEl = document.getElementById('rotating-word') as HTMLElement | null;
+    if (rotatingEl) {
+      const words = ['Proyectos', 'Ideas', 'Diseños', 'Soluciones', 'Estructuras'];
+      let wordIdx = 0;
+      setInterval(() => {
+        wordIdx = (wordIdx + 1) % words.length;
+        rotatingEl.animate(
+          [{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(-110%)', opacity: 0 }],
+          { duration: 280, easing: 'ease-in', fill: 'forwards' }
+        ).onfinish = () => {
+          rotatingEl.textContent = words[wordIdx];
+          rotatingEl.animate(
+            [{ transform: 'translateY(110%)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }],
+            { duration: 380, easing: 'ease-out', fill: 'forwards' }
+          );
+        };
+      }, 2200);
+    }  });
 </script>

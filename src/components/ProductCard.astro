@@ -11,7 +11,7 @@ const { name, description, image, category, images = [] } = Astro.props;
 ---
 
 <div 
-  class="bg-white rounded-xl shadow-lg overflow-hidden card-hover scroll-animate fade-up hover:shadow-xl transition-all duration-300"
+  class="spotlight-card relative bg-white rounded-xl shadow-lg overflow-hidden card-hover scroll-animate fade-up hover:shadow-xl transition-all duration-300"
   data-category={category}
 >
   <!-- Galería de imágenes con carousel -->
@@ -123,7 +123,27 @@ const { name, description, image, category, images = [] } = Astro.props;
       </button>
     </div>
   </div>
+  <div class="spotlight-glow pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500"></div>
 </div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.spotlight-card').forEach(card => {
+    const glow = card.querySelector<HTMLElement>('.spotlight-glow');
+    if (!glow) return;
+
+    card.addEventListener('mousemove', (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      glow.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(15, 40, 100, 0.13), transparent 70%)`;
+      glow.style.opacity = '1';
+    });
+
+    card.addEventListener('mouseleave', () => {
+      glow.style.opacity = '0';
+    });
+  });
+</script>
 
 <script>
   // Manejo del carousel en las tarjetas de productos

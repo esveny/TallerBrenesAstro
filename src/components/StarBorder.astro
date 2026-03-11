@@ -1,0 +1,96 @@
+---
+interface Props {
+  class?: string;
+  color?: string;
+  speed?: string;
+  radius?: string;
+  bg?: string;
+  blur?: string;
+}
+
+const {
+  class: className = '',
+  color = 'white',
+  speed = '6s',
+  radius = '20px',
+  bg = 'linear-gradient(to bottom, #000000, #111827)',
+  blur = '0px',
+} = Astro.props;
+---
+
+<div
+  class={`star-border ${className}`}
+  style={`--sb-color: ${color}; --sb-speed: ${speed}; --sb-radius: ${radius}; --sb-bg: ${bg}; --sb-blur: ${blur}; padding: 1px 0;`}
+>
+  <div class="star-border__ray star-border__ray--bottom"></div>
+  <div class="star-border__ray star-border__ray--top"></div>
+  <div class="star-border__content">
+    <slot />
+  </div>
+</div>
+
+<style>
+  .star-border {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    border-radius: var(--sb-radius);
+    transform: scale(1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+
+  .star-border:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  .star-border__ray {
+    position: absolute;
+    width: 300%;
+    height: 50%;
+    opacity: 0.7;
+    border-radius: 9999px;
+    z-index: 0;
+    background: radial-gradient(circle, var(--sb-color), transparent 10%);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+    animation-duration: var(--sb-speed);
+  }
+
+  .star-border__ray--bottom {
+    bottom: -11px;
+    right: -250%;
+    animation-name: sb-move-bottom;
+  }
+
+  .star-border__ray--top {
+    top: -10px;
+    left: -250%;
+    animation-name: sb-move-top;
+  }
+
+  .star-border__content {
+    position: relative;
+    z-index: 1;
+    background: var(--sb-bg);
+    backdrop-filter: blur(var(--sb-blur));
+    -webkit-backdrop-filter: blur(var(--sb-blur));
+    border: 1px solid rgba(55, 65, 81, 0.7);
+    color: #fff;
+    text-align: center;
+    padding: 16px 26px;
+    border-radius: var(--sb-radius);
+  }
+
+  @keyframes sb-move-bottom {
+    0%   { transform: translate(0%, 0%); opacity: 1; }
+    100% { transform: translate(-100%, 0%); opacity: 0; }
+  }
+
+  @keyframes sb-move-top {
+    0%   { transform: translate(0%, 0%); opacity: 1; }
+    100% { transform: translate(100%, 0%); opacity: 0; }
+  }
+</style>

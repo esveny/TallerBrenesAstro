@@ -10,7 +10,7 @@ const { title, description, icon, delay = 0 } = Astro.props;
 ---
 
 <div 
-  class="bg-white p-8 rounded-2xl shadow-lg card-hover scroll-animate fade-up"
+  class="spotlight-card relative overflow-hidden bg-white p-8 rounded-2xl shadow-lg card-hover scroll-animate fade-up"
   style={`transition-delay: ${delay}s`}
 >
   <div class="text-center">
@@ -26,4 +26,24 @@ const { title, description, icon, delay = 0 } = Astro.props;
     <h3 class="text-xl font-bold text-dark-800 mb-4">{title}</h3>
     <p class="text-gray-600 leading-relaxed">{description}</p>
   </div>
+  <div class="spotlight-glow pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500"></div>
 </div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.spotlight-card').forEach(card => {
+    const glow = card.querySelector<HTMLElement>('.spotlight-glow');
+    if (!glow) return;
+
+    card.addEventListener('mousemove', (e: MouseEvent) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      glow.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(15, 40, 100, 0.13), transparent 70%)`;
+      glow.style.opacity = '1';
+    });
+
+    card.addEventListener('mouseleave', () => {
+      glow.style.opacity = '0';
+    });
+  });
+</script>
