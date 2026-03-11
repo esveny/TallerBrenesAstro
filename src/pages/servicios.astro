@@ -24,8 +24,8 @@ const services = await getCollection("services");
       class="bg-gradient-to-r from-primary-800 to-dark-800 text-white py-20"
     >
       <div class="container mx-auto px-4 text-center">
-        <h1 class="text-5xl font-bold mb-6">Nuestros Servicios</h1>
-        <p class="text-xl opacity-90 max-w-3xl mx-auto">
+        <h1 class="text-5xl font-bold mb-6 scroll-animate fade-up">Nuestros Servicios</h1>
+        <p class="text-xl opacity-90 max-w-3xl mx-auto scroll-animate fade-up" style="transition-delay:.15s">
           Soluciones integrales en metalurgia con más de 20 años de experiencia
         </p>
       </div>
@@ -36,7 +36,7 @@ const services = await getCollection("services");
       <div class="container mx-auto px-4">
         <div
           id="services-container"
-          class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+          class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 stagger-children"
         >
           {
             services.map((service, index) => (
@@ -59,15 +59,16 @@ const services = await getCollection("services");
       class="py-20 bg-gradient-to-r from-dark-800 to-primary-800 text-white"
     >
       <div class="container mx-auto px-4 text-center">
-        <h2 class="text-4xl font-bold mb-6">
+        <h2 class="text-4xl font-bold mb-6 scroll-animate fade-up">
           ¿Necesita alguno de nuestros servicios?
         </h2>
-        <p class="text-xl mb-8 opacity-90">
+        <p class="text-xl mb-8 opacity-90 scroll-animate fade-up" style="transition-delay:.15s">
           Contáctanos para una evaluación gratuita
         </p>
         <a
           href="/contacto"
-          class="inline-flex items-center gap-3 bg-white text-dark-800 hover:bg-gray-100 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300 border border-gray-200"
+          class="scroll-animate scale-in inline-flex items-center gap-3 bg-white text-dark-800 hover:bg-gray-100 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300 border border-gray-200"
+          style="transition-delay:.3s"
         >
           <svg
             class="w-5 h-5"

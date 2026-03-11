@@ -117,7 +117,7 @@ const products = await getFeaturedProjects();
           subtitle="Razones que nos convierten en la mejor opción para sus proyectos"
         />
 
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-3 gap-8 stagger-children">
           <ServiceCard
             title="Negocio Nacional"
             description="Empresa 100% costarricense, comprometida con el desarrollo local y el apoyo a la economía nacional. Conocemos las necesidades específicas del mercado costarricense."
@@ -145,9 +145,9 @@ const products = await getFeaturedProjects();
     <!-- Nuestros Servicios -->
     <section class="py-20">
       <div class="container mx-auto px-4">
-        <SectionTitle title="Nuestros Servicios" />
+        <SectionTitle title="Nuestros Servicios" light />
 
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-3 gap-8 stagger-children">
           {
             services.map((service, index) => (
               <ServiceCard
@@ -205,7 +205,7 @@ const products = await getFeaturedProjects();
           subtitle="Algunos de nuestros proyectos más destacados"
         />
 
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-3 gap-8 stagger-children">
           {
             products.map((product: any) => (
               <ProductCard
@@ -266,11 +266,11 @@ const products = await getFeaturedProjects();
           <h2 class="text-4xl font-bold mb-6 scroll-animate fade-up">
             ¿Listo para materializar su proyecto?
           </h2>
-          <p class="text-xl mb-8 opacity-90 scroll-animate fade-up">
+          <p class="text-xl mb-8 opacity-90 scroll-animate fade-up" style="transition-delay:.15s">
             Contáctanos para una cotización gratuita y sin compromiso
           </p>
           <div
-            class="flex flex-col sm:flex-row gap-4 justify-center items-center scroll-animate fade-up"
+            class="flex flex-col sm:flex-row gap-4 justify-center items-center scroll-animate scale-in" style="transition-delay:.3s"
           >
             <StarBorder color="rgb(160,170,190)" speed="5s" radius="9999px">
               <a

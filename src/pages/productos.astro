@@ -146,8 +146,8 @@ const categories = [...new Set(products.map((product) => product.category))];
       class="bg-gradient-to-r from-primary-800 to-dark-800 text-white py-20"
     >
       <div class="container mx-auto px-4 text-center">
-        <h1 class="text-5xl font-bold mb-6">Galería de Proyectos</h1>
-        <p class="text-xl opacity-90 max-w-3xl mx-auto">
+        <h1 class="text-5xl font-bold mb-6 scroll-animate fade-up">Galería de Proyectos</h1>
+        <p class="text-xl opacity-90 max-w-3xl mx-auto scroll-animate fade-up" style="transition-delay:.15s">
           Proyectos fabricados con materiales de primera calidad y diseños
           personalizados
         </p>
@@ -180,7 +180,7 @@ const categories = [...new Set(products.map((product) => product.category))];
         <!-- Grid de Proyectos -->
         <div
           id="products-container"
-          class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+          class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 stagger-once"
         >
           {
             products.map((product: any) => (

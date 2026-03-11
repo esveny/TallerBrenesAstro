@@ -1,4 +1,6 @@
 ---
+import '../styles/tailwind.css';
+
 export interface Props {
   title: string;
   description?: string;
@@ -114,14 +116,17 @@ const fullOgImage = new URL(ogImage, siteUrl).toString();
   <body>
     <slot />
     <script>
-      import('../lib/intersection');
-      import('../lib/filters');
-      
-      document.addEventListener('DOMContentLoaded', () => {
-        import('../lib/intersection').then(({ initScrollAnimations, initLazyLoading }) => {
-          initScrollAnimations();
-          initLazyLoading();
-        });
+      import { initScrollAnimations, initLazyLoading } from '../lib/intersection';
+      import '../lib/filters';
+
+      // Module scripts run after DOM is parsed — call directly
+      initScrollAnimations();
+      initLazyLoading();
+
+      // Re-init on Astro page transitions (View Transitions)
+      document.addEventListener('astro:page-load', () => {
+        initScrollAnimations();
+        initLazyLoading();
       });
     </script>
   </body>
