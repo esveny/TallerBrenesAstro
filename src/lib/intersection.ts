@@ -1,6 +1,21 @@
 export function initScrollAnimations(): void {
   if (typeof window === 'undefined') return;
 
+  let isInitialLoad = true;
+  setTimeout(() => {
+    isInitialLoad = false;
+  }, 100);
+
+  const revealInstantly = (el: HTMLElement) => {
+    el.style.transition = 'none';
+    el.style.transitionDelay = '0s';
+    el.classList.add('animate');
+    setTimeout(() => {
+      el.style.transition = '';
+      el.style.transitionDelay = '';
+    }, 50);
+  };
+
   // Collect elements managed by stagger parents so we skip them in the solo observer
   const staggerManaged = new Set<Element>();
   document.querySelectorAll('.stagger-children, .stagger-once').forEach((parent) => {
@@ -12,7 +27,11 @@ export function initScrollAnimations(): void {
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('animate');
+          if (isInitialLoad) {
+            revealInstantly(entry.target as HTMLElement);
+          } else {
+            entry.target.classList.add('animate');
+          }
         } else {
           entry.target.classList.remove('animate');
         }
@@ -33,15 +52,19 @@ export function initScrollAnimations(): void {
       entries.forEach((entry) => {
         const children = entry.target.querySelectorAll('.scroll-animate');
         if (entry.isIntersecting) {
-          children.forEach((child, i) => {
-            const el = child as HTMLElement;
-            el.style.transitionDelay = `${i * 0.15}s`;
-            requestAnimationFrame(() => {
+          if (isInitialLoad) {
+            children.forEach((child) => revealInstantly(child as HTMLElement));
+          } else {
+            children.forEach((child, i) => {
+              const el = child as HTMLElement;
+              el.style.transitionDelay = `${i * 0.15}s`;
               requestAnimationFrame(() => {
-                el.classList.add('animate');
+                requestAnimationFrame(() => {
+                  el.classList.add('animate');
+                });
               });
             });
-          });
+          }
         } else {
           children.forEach((child) => {
             const el = child as HTMLElement;
@@ -62,15 +85,19 @@ export function initScrollAnimations(): void {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const children = entry.target.querySelectorAll('.scroll-animate');
-          children.forEach((child, i) => {
-            const el = child as HTMLElement;
-            el.style.transitionDelay = `${i * 0.15}s`;
-            requestAnimationFrame(() => {
+          if (isInitialLoad) {
+            children.forEach((child) => revealInstantly(child as HTMLElement));
+          } else {
+            children.forEach((child, i) => {
+              const el = child as HTMLElement;
+              el.style.transitionDelay = `${i * 0.15}s`;
               requestAnimationFrame(() => {
-                el.classList.add('animate');
+                requestAnimationFrame(() => {
+                  el.classList.add('animate');
+                });
               });
             });
-          });
+          }
           staggerOnceObserver.unobserve(entry.target);
         }
       });

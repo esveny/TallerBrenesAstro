@@ -44,7 +44,6 @@ const categories = [...new Set(images.map(img => img.category).filter(cat => cat
     <div 
       class="project-card bg-white rounded-2xl shadow-lg overflow-hidden card-hover scroll-animate fade-up"
       data-category={image.category}
-      style={`transition-delay: ${index * 0.1}s`}
     >
       <div class="aspect-video overflow-hidden">
         <img 
