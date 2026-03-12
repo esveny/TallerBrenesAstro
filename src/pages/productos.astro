@@ -46,7 +46,7 @@ async function getProductsFromSupabase(): Promise<Product[]> {
         } else if (Array.isArray(item.images)) {
           // Si ya viene como array (lo más común con JSONB)
           parsedImages = item.images.filter(
-            (img: any) => img && typeof img === "string"
+            (img: any) => img && typeof img === "string",
           );
         }
       }
@@ -95,7 +95,7 @@ async function getProductsDirectly(): Promise<Product[]> {
             const parsed = JSON.parse(item.images);
             if (Array.isArray(parsed)) {
               parsedImages = parsed.filter(
-                (img: any) => img && typeof img === "string"
+                (img: any) => img && typeof img === "string",
               );
             }
           } catch (e) {
@@ -104,7 +104,7 @@ async function getProductsDirectly(): Promise<Product[]> {
         } else if (Array.isArray(item.images)) {
           // Si ya es un array, usarlo directamente
           parsedImages = item.images.filter(
-            (img: any) => img && typeof img === "string"
+            (img: any) => img && typeof img === "string",
           );
         }
       }
@@ -141,22 +141,78 @@ const categories = [...new Set(products.map((product) => product.category))];
   <Navbar />
 
   <main>
-    <!-- Hero Section -->
+    <!-- Video Hero Section -->
     <section
-      class="bg-gradient-to-r from-[#1e293b] to-[#1a1a1a] text-white py-20"
+      class="video-hero relative w-full overflow-hidden bg-black"
+      style="height: 70vh; min-height: 480px;"
     >
-      <div class="container mx-auto px-4 text-center">
-        <h1 class="text-5xl font-bold mb-6 scroll-animate fade-up">Galería de Proyectos</h1>
-        <p class="text-xl opacity-90 max-w-3xl mx-auto scroll-animate fade-up" style="transition-delay:.15s">
-          Proyectos fabricados con materiales de primera calidad y diseños
-          personalizados
+      <!-- Video Background -->
+      <video
+        id="hero-video"
+        class="video-hero__bg absolute inset-0 w-full h-full object-cover"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster=""
+      >
+        <source
+          src="https://zjpgpagdnpmfgmesglvv.supabase.co/storage/v1/object/public/images/Video/puerta-pivotante-principal-moderna-madera-y-negro-Video4K.mp4"
+          type="video/mp4"
+        />
+      </video>
+
+      <!-- Overlay Gradient -->
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-[#1a1a1a]/90 z-10"
+      >
+      </div>
+
+      <!-- Hero Content -->
+      <div
+        class="relative z-20 flex flex-col items-center justify-center h-full text-center text-white px-4"
+      >
+        <span
+          class="video-hero__badge inline-block px-4 py-1.5 mb-5 rounded-full text-xs font-semibold tracking-widest uppercase border border-white/30 bg-white/10 backdrop-blur-sm opacity-0"
+        >
+          Nuestro Trabajo
+        </span>
+        <h1
+          class="video-hero__title text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-5 opacity-0 drop-shadow-lg"
+        >
+          Galería de Proyectos
+        </h1>
+        <p
+          class="video-hero__subtitle text-base sm:text-lg md:text-xl max-w-2xl mx-auto opacity-0 text-white/85 drop-shadow-md"
+        >
+          Fabricación personalizada con materiales de primera calidad y diseños
+          únicos
         </p>
+      </div>
+
+      <!-- Scroll Indicator (fuera del content div para centrado perfecto) -->
+      <div
+        class="video-hero__scroll absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 opacity-0 z-20"
+      >
+        <span
+          class="text-[11px] font-medium tracking-[0.2em] uppercase text-white/60"
+          >Explorar</span
+        >
+        <div
+          class="w-5 h-8 rounded-full border-2 border-white/40 flex items-start justify-center p-1"
+        >
+          <div class="scroll-dot w-1.5 h-1.5 rounded-full bg-white/80"></div>
+        </div>
       </div>
     </section>
 
-    <!-- Divisor hacia Buscador -->
-    <div class="h-16 relative bg-gradient-to-r from-[#1e293b] to-[#1a1a1a] -mt-px -mb-px z-10 w-full">
-      <div class="absolute inset-0 bg-gradient-to-b from-transparent to-[#f9fafb]"></div>
+    <!-- Divisor Video → Filtros -->
+    <div class="h-20 relative bg-[#1a1a1a] -mt-px -mb-px z-10 w-full">
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-[#1a1a1a] to-[#f9fafb]"
+      >
+      </div>
     </div>
 
     <!-- Buscador y Filtros -->
@@ -181,7 +237,7 @@ const categories = [...new Set(products.map((product) => product.category))];
             ))
           }
         </div>
-      
+
         <!-- Grid de Proyectos -->
         <div
           id="products-container"
@@ -220,148 +276,226 @@ const categories = [...new Set(products.map((product) => product.category))];
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
             </svg>
             <h3 class="text-xl font-semibold mb-2">
-                No se encontraron proyectos
-              </h3>
-              <p>Intenta con otros términos de búsqueda o categorías</p>
-            </div>
+              No se encontraron proyectos
+            </h3>
+            <p>Intenta con otros términos de búsqueda o categorías</p>
           </div>
         </div>
+      </div>
     </section>
 
     <!-- Divisor hacia CTA -->
-    <div class="h-16 relative bg-gradient-to-r from-[#1a1a1a] to-[#1e293b] -mt-px -mb-px z-10 w-full">
-      <div class="absolute inset-0 bg-gradient-to-b from-[#f9fafb] to-transparent"></div>
+    <div
+      class="h-16 relative bg-gradient-to-r from-[#1a1a1a] to-[#1e293b] -mt-px -mb-px z-10 w-full"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-[#f9fafb] to-transparent"
+      >
+      </div>
     </div>
 
     <!-- CTA -->
     <section
       class="py-20 bg-gradient-to-r from-[#1a1a1a] to-[#1e293b] text-white"
     >
-        <div class="container mx-auto px-4 text-center">
-          <h2 class="text-4xl font-bold mb-6">¿No encuentra lo que busca?</h2>
-          <p class="text-xl mb-8 opacity-90">
-            Fabricamos proyectos personalizados según sus necesidades
-          </p>
-          <a
-            href="/contacto"
-            class="inline-flex items-center gap-3 bg-white text-dark-800 hover:bg-gray-100 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300 border border-gray-200"
+      <div class="container mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-6">¿No encuentra lo que busca?</h2>
+        <p class="text-xl mb-8 opacity-90">
+          Fabricamos proyectos personalizados según sus necesidades
+        </p>
+        <a
+          href="/contacto"
+          class="inline-flex items-center gap-3 bg-white text-dark-800 hover:bg-gray-100 font-bold text-lg px-10 py-4 rounded-full shadow-xl hover:shadow-white/25 transform hover:scale-105 transition-all duration-300 border border-gray-200"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            <svg
-              class="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <!-- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>-->
-            </svg>
-            Solicitar Producto Personalizado
-            <svg
-              class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="3"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-            </svg>
-          </a>
-        </div>
-      </section>
+            <!-- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>-->
+          </svg>
+          Solicitar Producto Personalizado
+          <svg
+            class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="3"
+              d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+          </svg>
+        </a>
+      </div>
     </section>
-
-    <Footer />
-    <Toast />
-    <EnhancedProductModal />
-    <WhatsAppButton />
   </main>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const searchInput = document.getElementById(
-        "search-input"
-      ) as HTMLInputElement;
-      const filterButtons = document.querySelectorAll(".filter-btn");
-      const productCards = document.querySelectorAll(
-        "#products-container [data-category]"
-      );
-      const counter = document.querySelector(".filter-counter");
-      const noResults = document.getElementById("no-results");
+  <Footer />
+  <Toast />
+  <EnhancedProductModal />
+  <WhatsAppButton />
+</Layout>
 
-      let activeCategory = "todos";
-      let searchTerm = "";
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById(
+      "search-input",
+    ) as HTMLInputElement;
+    const filterButtons = document.querySelectorAll(".filter-btn");
+    const productCards = document.querySelectorAll(
+      "#products-container [data-category]",
+    );
+    const counter = document.querySelector(".filter-counter");
+    const noResults = document.getElementById("no-results");
 
-      function updateDisplay() {
-        let visibleCount = 0;
+    let activeCategory = "todos";
+    let searchTerm = "";
 
-        productCards.forEach((card) => {
-          const category = card.getAttribute("data-category") || "";
-          const searchable = card.getAttribute("data-searchable") || "";
+    function updateDisplay() {
+      let visibleCount = 0;
 
-          const matchesCategory =
-            activeCategory === "todos" || category === activeCategory;
-          const matchesSearch =
-            !searchTerm || searchable.includes(searchTerm.toLowerCase());
+      productCards.forEach((card) => {
+        const category = card.getAttribute("data-category") || "";
+        const searchable = card.getAttribute("data-searchable") || "";
 
-          const shouldShow = matchesCategory && matchesSearch;
+        const matchesCategory =
+          activeCategory === "todos" || category === activeCategory;
+        const matchesSearch =
+          !searchTerm || searchable.includes(searchTerm.toLowerCase());
 
-          if (shouldShow) {
-            card.classList.remove("hidden", "filtering-out");
-            card.classList.add("filtering-in");
-            visibleCount++;
-          } else {
-            card.classList.add("filtering-out");
-            setTimeout(() => {
-              card.classList.add("hidden");
-              card.classList.remove("filtering-in", "filtering-out");
-            }, 300);
-          }
-        });
+        const shouldShow = matchesCategory && matchesSearch;
 
-        // Actualizar contador y mostrar/ocultar mensaje "sin resultados"
-        if (counter) {
-          counter.textContent = `${visibleCount} ${visibleCount === 1 ? "proyecto" : "proyectos"} ${visibleCount === 1 ? "encontrado" : "encontrados"}`;
+        if (shouldShow) {
+          card.classList.remove("hidden", "filtering-out");
+          card.classList.add("filtering-in");
+          visibleCount++;
+        } else {
+          card.classList.add("filtering-out");
+          setTimeout(() => {
+            card.classList.add("hidden");
+            card.classList.remove("filtering-in", "filtering-out");
+          }, 300);
         }
+      });
 
-        if (noResults) {
-          noResults.classList.toggle("hidden", visibleCount > 0);
-        }
+      // Actualizar contador y mostrar/ocultar mensaje "sin resultados"
+      if (counter) {
+        counter.textContent = `${visibleCount} ${visibleCount === 1 ? "proyecto" : "proyectos"} ${visibleCount === 1 ? "encontrado" : "encontrados"}`;
       }
 
-      // Filtros por categoría
-      filterButtons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          // Actualizar botones activos
-          filterButtons.forEach((b) =>
-            b.classList.remove("active", "bg-primary-600", "text-white")
-          );
-          btn.classList.add("active", "bg-primary-600", "text-white");
+      if (noResults) {
+        noResults.classList.toggle("hidden", visibleCount > 0);
+      }
+    }
 
-          activeCategory = btn.getAttribute("data-filter") || "todos";
-          updateDisplay();
-        });
-      });
+    // Filtros por categoría
+    filterButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        // Actualizar botones activos
+        filterButtons.forEach((b) =>
+          b.classList.remove("active", "bg-primary-600", "text-white"),
+        );
+        btn.classList.add("active", "bg-primary-600", "text-white");
 
-      // Búsqueda en tiempo real
-      searchInput?.addEventListener("input", (e) => {
-        searchTerm = (e.target as HTMLInputElement).value;
+        activeCategory = btn.getAttribute("data-filter") || "todos";
         updateDisplay();
       });
+    });
 
-      // Mostrar todos inicialmente
+    // Búsqueda en tiempo real
+    searchInput?.addEventListener("input", (e) => {
+      searchTerm = (e.target as HTMLInputElement).value;
       updateDisplay();
     });
-  </script>
 
-  <style>
-    /* Clase para truncar texto en múltiples líneas */
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+    // Mostrar todos inicialmente
+    updateDisplay();
+  });
+</script>
+
+<script is:inline>
+  // Crossfade suave en el loop del video
+  (function () {
+    var video = document.getElementById("hero-video");
+    if (!video) return;
+
+    // Crear overlay negro para el crossfade
+    var fadeOverlay = document.createElement("div");
+    fadeOverlay.style.cssText =
+      "position:absolute;inset:0;background:#000;opacity:0;transition:opacity 1.2s ease;z-index:5;pointer-events:none;";
+    video.parentElement.appendChild(fadeOverlay);
+
+    var fading = false;
+
+    setInterval(function () {
+      if (!video.duration || isNaN(video.duration)) return;
+
+      // Fade out 1.5s antes del final
+      if (!fading && video.currentTime >= video.duration - 1.5) {
+        fading = true;
+        fadeOverlay.style.opacity = "1";
+      }
+
+      // Fade in cuando el video se reinicia (está en los primeros 0.5s)
+      if (fading && video.currentTime < 0.5) {
+        fadeOverlay.style.opacity = "0";
+        setTimeout(function () {
+          fading = false;
+        }, 1200);
+      }
+    }, 200);
+  })();
+</script>
+
+<style>
+  /* Clase para truncar texto en múltiples líneas */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* ── Video Hero Animations ── */
+  @keyframes heroFadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
     }
-  </style></Layout
->
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scrollBounce {
+    0%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.8;
+    }
+    50% {
+      transform: translateY(10px);
+      opacity: 0.3;
+    }
+  }
+
+  .video-hero__badge {
+    animation: heroFadeUp 0.8s ease-out 0.4s forwards;
+  }
+  .video-hero__title {
+    animation: heroFadeUp 0.8s ease-out 0.7s forwards;
+  }
+  .video-hero__subtitle {
+    animation: heroFadeUp 0.8s ease-out 1s forwards;
+  }
+  .video-hero__scroll {
+    animation: heroFadeUp 0.8s ease-out 1.4s forwards;
+  }
+  .scroll-dot {
+    animation: scrollBounce 2s ease-in-out infinite;
+  }
+</style>
