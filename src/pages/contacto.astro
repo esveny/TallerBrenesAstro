@@ -19,9 +19,12 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
   <main>
     <!-- Hero Section -->
     <section
-      class="bg-gradient-to-r from-primary-800 to-dark-800 text-white py-20"
+      class="bg-gradient-to-r from-primary-800 to-dark-800 text-white py-20 relative"
     >
-      <div class="container mx-auto px-4 text-center">
+      <!-- Overlay para el desvanecido -->
+      <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#171718] to-transparent"></div>
+      
+      <div class="container mx-auto px-4 text-center relative z-10">
         <h1 class="text-5xl font-bold mb-6 scroll-animate fade-up">Contáctenos</h1>
         <p class="text-xl opacity-90 scroll-animate fade-up" style="transition-delay:.15s">
           Estamos aquí para ayudarle con su proyecto
@@ -30,12 +33,12 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
     </section>
 
     <!-- Información de contacto y formulario -->
-    <section class="py-20">
-      <div class="container mx-auto px-4">
+    <section class="py-20 bg-[#171718] relative">
+      <div class="container mx-auto px-4 relative z-10">
         <div class="grid lg:grid-cols-2 gap-12">
           <!-- Información de contacto -->
           <div class="scroll-animate fade-left">
-            <SectionTitle title="Información de Contacto" centered={false} />
+            <SectionTitle title="Información de Contacto" centered={false} light />
 
             <div class="space-y-6">
               <!-- Ubicación -->
@@ -101,7 +104,7 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
 
           <!-- Formulario de contacto -->
           <div class="scroll-animate fade-right" style="transition-delay:.2s">
-            <SectionTitle title="Envíanos un Mensaje" centered={false} />
+            <SectionTitle title="Envíanos un Mensaje" centered={false} light />
 
             <form id="contact-form" class="bg-white p-8 rounded-2xl shadow-lg">
               <div class="grid md:grid-cols-2 gap-6 mb-6">
@@ -194,10 +197,15 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
           </div>
         </div>
       </div>
+      
+      <!-- Overlay para el desvanecido inferior: lo hacemos saliendo de la sección hacia abajo -->
     </section>
 
+    <!-- Divisor con degradado entre secciones -->
+    <div class="h-32 bg-gradient-to-b from-[#171718] to-gray-50"></div>
+
     <!-- Mapa -->
-    <section class="py-20 bg-gray-50">
+    <section class="pb-20 pt-8 bg-gray-50">
       <div class="container mx-auto px-4">
         <SectionTitle title="Nuestra Ubicación" />
 
@@ -221,6 +229,11 @@ import WhatsAppButton from "../components/WhatsAppButton.astro";
         </p>
       </div>
     </section>
+
+    <!-- Divisor sutil con degradado hacia el Footer -->
+    <div class="h-24 relative bg-gradient-to-r from-dark-800 to-primary-800 -mt-px -mb-px z-10 w-full">
+      <div class="absolute inset-0 bg-gradient-to-b from-gray-50 via-gray-50/50 to-transparent"></div>
+    </div>
   </main>
 
   <Footer />

@@ -24,12 +24,27 @@ const services = await getCollection("services");
       class="bg-gradient-to-r from-primary-800 to-dark-800 text-white py-20"
     >
       <div class="container mx-auto px-4 text-center">
-        <h1 class="text-5xl font-bold mb-6 scroll-animate fade-up">Nuestros Servicios</h1>
-        <p class="text-xl opacity-90 max-w-3xl mx-auto scroll-animate fade-up" style="transition-delay:.15s">
+        <h1 class="text-5xl font-bold mb-6 scroll-animate fade-up">
+          Nuestros Servicios
+        </h1>
+        <p
+          class="text-xl opacity-90 max-w-3xl mx-auto scroll-animate fade-up"
+          style="transition-delay:.15s"
+        >
           Soluciones integrales en metalurgia con más de 20 años de experiencia
         </p>
       </div>
     </section>
+
+    <!-- Divisor hacia Grid de Servicios -->
+    <div
+      class="h-16 relative bg-gradient-to-r from-primary-800 to-dark-800 -mt-px -mb-px z-10 w-full"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-transparent to-gray-50"
+      >
+      </div>
+    </div>
 
     <!-- Grid de Servicios -->
     <section class="py-20 bg-gray-50">
@@ -54,6 +69,16 @@ const services = await getCollection("services");
       </div>
     </section>
 
+    <!-- Divisor hacia CTA -->
+    <div
+      class="h-16 relative bg-gradient-to-r from-dark-800 to-primary-800 -mt-px -mb-px z-10 w-full"
+    >
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-gray-50 to-transparent"
+      >
+      </div>
+    </div>
+
     <!-- CTA -->
     <section
       class="py-20 bg-gradient-to-r from-dark-800 to-primary-800 text-white"
@@ -62,7 +87,10 @@ const services = await getCollection("services");
         <h2 class="text-4xl font-bold mb-6 scroll-animate fade-up">
           ¿Necesita alguno de nuestros servicios?
         </h2>
-        <p class="text-xl mb-8 opacity-90 scroll-animate fade-up" style="transition-delay:.15s">
+        <p
+          class="text-xl mb-8 opacity-90 scroll-animate fade-up"
+          style="transition-delay:.15s"
+        >
           Contáctanos para una evaluación gratuita
         </p>
         <a
