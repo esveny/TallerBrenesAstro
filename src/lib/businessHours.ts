@@ -13,7 +13,7 @@ export const businessHours: BusinessHours[] = [
   { day: 3, openTime: 7, closeTime: 17, closed: false }, // Miércoles
   { day: 4, openTime: 7, closeTime: 17, closed: false }, // Jueves
   { day: 5, openTime: 7, closeTime: 17, closed: false }, // Viernes
-  { day: 6, openTime: 7, closeTime: 12, closed: false }, // Sábado
+  { day: 6, openTime: 7, closeTime: 11, closed: false }, // Sábado
 ];
 
 export function getCurrentBusinessStatus(): {
