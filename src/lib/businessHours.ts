@@ -8,12 +8,12 @@ export interface BusinessHours {
 // Horarios del taller: L-V 6:00-17:00, Sáb 6:00-12:00, Dom cerrado
 export const businessHours: BusinessHours[] = [
   { day: 0, openTime: 0, closeTime: 0, closed: true }, // Domingo
-  { day: 1, openTime: 6, closeTime: 17, closed: false }, // Lunes
-  { day: 2, openTime: 6, closeTime: 17, closed: false }, // Martes  
-  { day: 3, openTime: 6, closeTime: 17, closed: false }, // Miércoles
-  { day: 4, openTime: 6, closeTime: 17, closed: false }, // Jueves
-  { day: 5, openTime: 6, closeTime: 17, closed: false }, // Viernes
-  { day: 6, openTime: 6, closeTime: 12, closed: false }, // Sábado
+  { day: 1, openTime: 7, closeTime: 17, closed: false }, // Lunes
+  { day: 2, openTime: 7, closeTime: 17, closed: false }, // Martes  
+  { day: 3, openTime: 7, closeTime: 17, closed: false }, // Miércoles
+  { day: 4, openTime: 7, closeTime: 17, closed: false }, // Jueves
+  { day: 5, openTime: 7, closeTime: 17, closed: false }, // Viernes
+  { day: 6, openTime: 7, closeTime: 12, closed: false }, // Sábado
 ];
 
 export function getCurrentBusinessStatus(): {
@@ -32,8 +32,8 @@ export function getCurrentBusinessStatus(): {
   if (!todayHours || todayHours.closed) {
     return {
       isOpen: false,
-      message: '🔴 Cerrado - Abre el lunes a las 6:00 AM',
-      nextOpenTime: 'lunes 6:00 AM'
+      message: '🔴 Cerrado - Abre el lunes a las 7:00 AM',
+      nextOpenTime: 'lunes 7:00 AM'
     };
   }
   
@@ -84,7 +84,7 @@ function getNextBusinessDay(currentDay: number): { dayName: string; openTime: nu
     }
   }
   
-  return { dayName: 'lunes', openTime: 6 };
+  return { dayName: 'lunes', openTime: 7 };
 }
 
 export function getFormattedSchedule(): Array<{
