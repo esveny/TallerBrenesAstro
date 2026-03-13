@@ -128,6 +128,11 @@ const fullOgImage = new URL(ogImage, siteUrl).toString();
         initScrollAnimations();
         initLazyLoading();
       });
+
+      // Registro del Service Worker para caché offline
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js');
+      }
     </script>
   </body>
 </html>
